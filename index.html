@@ -75,7 +75,10 @@
   .quiz-type-badge { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 2px; padding: 3px 8px; border: 1px solid var(--gold); color: var(--gold); display: inline-block; margin-bottom: 12px; text-transform: uppercase; }
   .quiz-question-box { background: var(--surface); border: 1px solid var(--border); padding: 20px; margin-bottom: 16px; }
   .quiz-question-text { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--cream); line-height: 1.4; margin-bottom: 14px; }
-  #quiz-youtube { width: 100%; height: 220px; border: none; }
+  .video-wrapper { position: relative; width: 100%; }
+  #quiz-youtube { width: 100%; height: 220px; border: none; display: block; }
+  #youtube-player { width: 100%; height: 200px; border: none; display: block; }
+  .video-overlay { position: absolute; top: 0; left: 0; right: 0; height: 52%; background: #000; pointer-events: none; z-index: 2; }
   .play-hint { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; margin-top: 6px; }
 
   /* 실제 시험 방식 보기 */
@@ -197,7 +200,7 @@
 
       <div class="quiz-question-box">
         <div class="quiz-question-text">다음 음악을 듣고 작곡가와 제목을 고르세요.</div>
-        <iframe id="quiz-youtube" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <div class="video-wrapper"><iframe id="quiz-youtube" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="video-overlay"></div></div>
         <p class="play-hint">▶ 위 영상에서 해당 구간을 재생하세요</p>
       </div>
 
@@ -250,7 +253,7 @@
     </div>
     <button class="close-player" onclick="closePlayer()">✕</button>
   </div>
-  <iframe id="youtube-player" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  <div class="video-wrapper"><iframe id="youtube-player" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="video-overlay"></div></div>
 </div>
 
 <script>
