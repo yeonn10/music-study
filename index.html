@@ -7,568 +7,121 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Serif+KR:wght@300;400;600&family=Space+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0e0c0a;
-    --surface: #1a1714;
-    --surface2: #242019;
-    --gold: #c9a84c;
-    --gold-light: #e8c96e;
-    --cream: #f0e8d8;
-    --muted: #7a7060;
-    --red: #c44b3a;
-    --green: #4a9e6a;
-    --border: #2e2a22;
+    --bg: #0e0c0a; --surface: #1a1714; --surface2: #242019;
+    --gold: #c9a84c; --gold-light: #e8c96e; --cream: #f0e8d8;
+    --muted: #7a7060; --red: #c44b3a; --green: #4a9e6a; --border: #2e2a22;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--cream);
-    font-family: 'Noto Serif KR', serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* Grain overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  header {
-    position: relative;
-    text-align: center;
-    padding: 60px 20px 40px;
-    border-bottom: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  header::after {
-    content: '♩';
-    position: absolute;
-    font-size: 300px;
-    color: rgba(201,168,76,0.03);
-    top: -60px; right: -40px;
-    pointer-events: none;
-    font-family: serif;
-  }
-
-  .subtitle {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 4px;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-
-  h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(28px, 6vw, 52px);
-    font-weight: 900;
-    line-height: 1.1;
-    color: var(--cream);
-  }
-
+  body { background: var(--bg); color: var(--cream); font-family: 'Noto Serif KR', serif; min-height: 100vh; overflow-x: hidden; font-size: 14px; }
+  header { text-align: center; padding: 32px 20px 24px; border-bottom: 1px solid var(--border); }
+  .subtitle { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(24px, 5vw, 42px); font-weight: 900; color: var(--cream); }
   h1 span { color: var(--gold); }
-
-  .header-meta {
-    margin-top: 14px;
-    font-size: 12px;
-    color: var(--muted);
-    font-family: 'Space Mono', monospace;
-  }
-
-  /* Tabs */
-  nav {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-    padding: 24px 20px 0;
-    position: relative;
-    z-index: 1;
-  }
-
-  .tab-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
-    padding: 10px 20px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: all .2s;
-  }
-
-  .tab-btn.active {
-    background: var(--gold);
-    border-color: var(--gold);
-    color: var(--bg);
-  }
-
-  .tab-btn:hover:not(.active) {
-    border-color: var(--gold);
-    color: var(--gold);
-  }
-
-  /* Main content */
-  main {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 32px 20px 80px;
-    position: relative;
-    z-index: 1;
-  }
-
+  .header-meta { margin-top: 8px; font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; }
+  nav { display: flex; justify-content: center; gap: 4px; padding: 20px 20px 0; }
+  .tab-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 2px; padding: 10px 20px; cursor: pointer; text-transform: uppercase; transition: all .2s; }
+  .tab-btn.active { background: var(--gold); border-color: var(--gold); color: var(--bg); }
+  .tab-btn:hover:not(.active) { border-color: var(--gold); color: var(--gold); }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 220px; }
   .tab-content { display: none; }
   .tab-content.active { display: block; }
 
-  /* ========== LIST TAB ========== */
-  .list-filters {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-  }
-
-  .filter-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 1px;
-    padding: 6px 14px;
-    cursor: pointer;
-    transition: all .2s;
-    text-transform: uppercase;
-  }
-
-  .filter-btn.active, .filter-btn:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-  }
-
-  .piece-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 16px 20px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: all .2s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .piece-card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: var(--gold);
-    transform: scaleY(0);
-    transition: transform .2s;
-  }
-
-  .piece-card:hover {
-    background: var(--surface2);
-    border-color: var(--gold);
-  }
-
+  /* LIST */
+  .list-filters { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+  .filter-btn { background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 1px; padding: 6px 12px; cursor: pointer; transition: all .2s; text-transform: uppercase; }
+  .filter-btn.active, .filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .piece-card { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border: 1px solid var(--border); background: var(--surface); margin-bottom: 6px; cursor: pointer; transition: all .2s; position: relative; overflow: hidden; }
+  .piece-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--gold); transform: scaleY(0); transition: transform .2s; }
+  .piece-card:hover { background: var(--surface2); border-color: var(--gold); }
   .piece-card:hover::before { transform: scaleY(1); }
-
-  .piece-num {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--gold);
-    min-width: 28px;
-    margin-top: 2px;
-  }
-
+  .piece-num { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--gold); min-width: 24px; margin-top: 2px; }
   .piece-info { flex: 1; }
+  .piece-composer { font-size: 10px; color: var(--gold-light); font-family: 'Space Mono', monospace; letter-spacing: 1px; margin-bottom: 3px; }
+  .piece-title { font-size: 14px; color: var(--cream); line-height: 1.4; }
+  .piece-time { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); margin-top: 3px; }
+  .piece-video-tag { font-family: 'Space Mono', monospace; font-size: 9px; padding: 2px 5px; border: 1px solid var(--border); color: var(--muted); min-width: 28px; text-align: center; }
+  .section-header { font-family: 'Playfair Display', serif; font-size: 12px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; margin: 20px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
 
-  .piece-composer {
-    font-size: 11px;
-    color: var(--gold-light);
-    font-family: 'Space Mono', monospace;
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-  }
-
-  .piece-title {
-    font-size: 15px;
-    color: var(--cream);
-    line-height: 1.4;
-  }
-
-  .piece-time {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-
-  .piece-video-tag {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    padding: 2px 6px;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    min-width: 32px;
-    text-align: center;
-    margin-top: 2px;
-  }
-
-  /* Player */
-  #player-container {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: var(--surface2);
-    border-top: 1px solid var(--gold);
-    padding: 12px 20px;
-    z-index: 100;
-    display: none;
-    align-items: center;
-    gap: 16px;
-  }
-
+  /* PLAYER */
+  #player-container { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface2); border-top: 1px solid var(--gold); padding: 10px 16px; z-index: 100; display: none; flex-direction: column; gap: 8px; }
   #player-container.visible { display: flex; }
-
+  .player-top { display: flex; align-items: center; gap: 12px; }
   #player-info { flex: 1; min-width: 0; }
   #player-composer { font-size: 10px; color: var(--gold); font-family: 'Space Mono', monospace; }
-  #player-title { font-size: 13px; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-  #youtube-player {
-    width: 180px;
-    height: 100px;
-    flex-shrink: 0;
-  }
-
-  .close-player {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 16px;
-    width: 32px; height: 32px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-
+  #player-title { font-size: 12px; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .close-player { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 14px; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .close-player:hover { border-color: var(--red); color: var(--red); }
+  #youtube-player { width: 100%; height: 200px; border: none; }
 
-  /* ========== QUIZ TAB ========== */
-  .quiz-settings {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 24px;
-    margin-bottom: 24px;
-  }
-
-  .quiz-settings h3 {
-    font-family: 'Playfair Display', serif;
-    color: var(--gold);
-    margin-bottom: 16px;
-    font-size: 18px;
-  }
-
-  .settings-row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-  }
-
-  .setting-group { display: flex; flex-direction: column; gap: 6px; }
-  .setting-group label {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .setting-group select {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--cream);
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    padding: 8px 12px;
-    cursor: pointer;
-  }
-
-  .video-checkboxes {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .video-check {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    font-size: 13px;
-  }
-
+  /* QUIZ SETTINGS */
+  .quiz-settings { background: var(--surface); border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; }
+  .quiz-settings h3 { font-family: 'Playfair Display', serif; color: var(--gold); margin-bottom: 14px; font-size: 17px; }
+  .settings-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .setting-group { display: flex; flex-direction: column; gap: 5px; }
+  .setting-group label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .setting-group select { background: var(--surface2); border: 1px solid var(--border); color: var(--cream); font-family: 'Space Mono', monospace; font-size: 12px; padding: 7px 10px; cursor: pointer; }
+  .video-checkboxes { display: flex; gap: 12px; flex-wrap: wrap; }
+  .video-check { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; }
   .video-check input { accent-color: var(--gold); }
-
-  .start-btn {
-    background: var(--gold);
-    border: none;
-    color: var(--bg);
-    font-family: 'Playfair Display', serif;
-    font-size: 16px;
-    font-weight: 700;
-    padding: 14px 40px;
-    cursor: pointer;
-    width: 100%;
-    transition: all .2s;
-    letter-spacing: 1px;
-  }
-
+  .start-btn { background: var(--gold); border: none; color: var(--bg); font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; padding: 12px 0; cursor: pointer; width: 100%; transition: all .2s; letter-spacing: 1px; margin-top: 4px; }
   .start-btn:hover { background: var(--gold-light); }
 
-  /* Quiz question */
+  /* QUIZ AREA */
   #quiz-area { display: none; }
   #quiz-area.active { display: block; }
+  .quiz-progress { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 14px; display: flex; justify-content: space-between; }
+  .progress-bar { height: 2px; background: var(--border); margin-bottom: 20px; }
+  .progress-fill { height: 100%; background: var(--gold); transition: width .3s; }
+  .quiz-type-badge { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 2px; padding: 3px 8px; border: 1px solid var(--gold); color: var(--gold); display: inline-block; margin-bottom: 12px; text-transform: uppercase; }
+  .quiz-question-box { background: var(--surface); border: 1px solid var(--border); padding: 20px; margin-bottom: 16px; }
+  .quiz-question-text { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--cream); line-height: 1.4; margin-bottom: 14px; }
+  #quiz-youtube { width: 100%; height: 220px; border: none; }
+  .play-hint { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; margin-top: 6px; }
 
-  .quiz-progress {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  /* 실제 시험 방식 보기 */
+  .exam-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .exam-col-title { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .exam-list { display: flex; flex-direction: column; gap: 4px; }
+  .exam-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px; border: 1px solid var(--border); background: var(--surface); font-size: 12px; line-height: 1.4; }
+  .exam-key { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--gold); min-width: 20px; flex-shrink: 0; margin-top: 1px; }
 
-  .progress-bar {
-    height: 2px;
-    background: var(--border);
-    margin-bottom: 24px;
-    position: relative;
-  }
+  /* 답 입력 영역 */
+  .answer-area { background: var(--surface); border: 1px solid var(--border); padding: 16px; margin-bottom: 16px; }
+  .answer-area-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+  .answer-inputs { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .answer-label { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--cream); }
+  .answer-select { background: var(--surface2); border: 1px solid var(--gold); color: var(--cream); font-family: 'Space Mono', monospace; font-size: 13px; padding: 8px 10px; cursor: pointer; min-width: 80px; }
+  .answer-select:focus { outline: none; border-color: var(--gold-light); }
+  .answer-example { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 8px; }
 
-  .progress-fill {
-    height: 100%;
-    background: var(--gold);
-    transition: width .3s;
-  }
+  .submit-btn { background: var(--gold); border: none; color: var(--bg); font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 2px; padding: 12px 28px; cursor: pointer; text-transform: uppercase; transition: all .2s; margin-top: 12px; width: 100%; }
+  .submit-btn:hover { background: var(--gold-light); }
+  .submit-btn:disabled { background: var(--border); color: var(--muted); cursor: default; }
 
-  .quiz-type-badge {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 2px;
-    padding: 4px 10px;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    display: inline-block;
-    margin-bottom: 16px;
-    text-transform: uppercase;
-  }
-
-  .quiz-question-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 28px;
-    margin-bottom: 20px;
-    min-height: 140px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .quiz-question-text {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px;
-    color: var(--cream);
-    line-height: 1.4;
-  }
-
-  .quiz-player-area {
-    margin-top: 8px;
-  }
-
-  #quiz-youtube {
-    width: 100%;
-    max-width: 480px;
-    height: 270px;
-  }
-
-  .play-hint {
-    font-size: 12px;
-    color: var(--muted);
-    font-family: 'Space Mono', monospace;
-    margin-top: 8px;
-  }
-
-  .options-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-
-  .option-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--cream);
-    font-family: 'Noto Serif KR', serif;
-    font-size: 13px;
-    padding: 16px 20px;
-    text-align: left;
-    cursor: pointer;
-    transition: all .15s;
-    line-height: 1.4;
-    position: relative;
-  }
-
-  .option-btn .opt-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: var(--gold);
-    display: block;
-    margin-bottom: 4px;
-  }
-
-  .option-btn:hover:not(:disabled) {
-    border-color: var(--gold);
-    background: var(--surface2);
-  }
-
-  .option-btn.correct {
-    border-color: var(--green);
-    background: rgba(74,158,106,0.15);
-  }
-
-  .option-btn.wrong {
-    border-color: var(--red);
-    background: rgba(196,75,58,0.15);
-  }
-
-  .option-btn:disabled { cursor: default; }
-
-  .quiz-feedback {
-    padding: 16px 20px;
-    border: 1px solid var(--border);
-    margin-bottom: 16px;
-    display: none;
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
+  .quiz-feedback { padding: 14px 16px; border: 1px solid var(--border); margin-bottom: 14px; display: none; font-size: 13px; line-height: 1.6; }
   .quiz-feedback.correct-fb { border-color: var(--green); color: var(--green); }
   .quiz-feedback.wrong-fb { border-color: var(--red); color: var(--red); }
   .quiz-feedback.show { display: block; }
-
-  .next-btn {
-    background: none;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 2px;
-    padding: 12px 32px;
-    cursor: pointer;
-    text-transform: uppercase;
-    display: none;
-    transition: all .2s;
-  }
-
+  .next-btn { background: none; border: 1px solid var(--gold); color: var(--gold); font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 2px; padding: 11px 28px; cursor: pointer; text-transform: uppercase; display: none; transition: all .2s; }
   .next-btn.show { display: inline-block; }
   .next-btn:hover { background: var(--gold); color: var(--bg); }
 
-  /* Results */
+  /* RESULTS */
   #quiz-results { display: none; }
   #quiz-results.show { display: block; }
-
-  .results-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 40px;
-    text-align: center;
-  }
-
-  .results-score {
-    font-family: 'Playfair Display', serif;
-    font-size: 72px;
-    color: var(--gold);
-    font-weight: 900;
-    line-height: 1;
-  }
-
-  .results-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-top: 8px;
-    margin-bottom: 24px;
-  }
-
-  .results-breakdown {
-    text-align: left;
-    margin-top: 24px;
-    max-height: 300px;
-    overflow-y: auto;
-  }
-
-  .result-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-  }
-
-  .result-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
-
-  .retry-btn {
-    background: var(--gold);
-    border: none;
-    color: var(--bg);
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 2px;
-    padding: 12px 32px;
-    cursor: pointer;
-    text-transform: uppercase;
-    margin-top: 24px;
-    transition: all .2s;
-  }
-
+  .results-box { background: var(--surface); border: 1px solid var(--border); padding: 32px; text-align: center; }
+  .results-score { font-family: 'Playfair Display', serif; font-size: 64px; color: var(--gold); font-weight: 900; line-height: 1; }
+  .results-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-top: 6px; margin-bottom: 20px; }
+  .results-breakdown { text-align: left; margin-top: 20px; max-height: 320px; overflow-y: auto; }
+  .result-item { padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .result-item .ri-top { display: flex; gap: 8px; align-items: flex-start; }
+  .result-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+  .result-detail { font-size: 11px; color: var(--muted); margin-top: 4px; font-family: 'Space Mono', monospace; }
+  .retry-btn { background: var(--gold); border: none; color: var(--bg); font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 2px; padding: 11px 28px; cursor: pointer; text-transform: uppercase; margin-top: 20px; transition: all .2s; }
   .retry-btn:hover { background: var(--gold-light); }
 
-  /* Section headers */
-  .section-header {
-    font-family: 'Playfair Display', serif;
-    font-size: 13px;
-    color: var(--gold);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin: 24px 0 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  @media (max-width: 600px) {
-    .options-grid { grid-template-columns: 1fr; }
-    #quiz-youtube { height: 200px; }
-    #youtube-player { width: 140px; height: 79px; }
-    .quiz-question-text { font-size: 16px; }
+  @media (max-width: 500px) {
+    .exam-columns { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -581,8 +134,8 @@
 </header>
 
 <nav>
-  <button class="tab-btn active" onclick="switchTab('list')">곡 목록</button>
-  <button class="tab-btn" onclick="switchTab('quiz')">랜덤 퀴즈</button>
+  <button class="tab-btn active" onclick="switchTab('list', this)">곡 목록</button>
+  <button class="tab-btn" onclick="switchTab('quiz', this)">랜덤 퀴즈</button>
 </nav>
 
 <main>
@@ -613,23 +166,16 @@
             </select>
           </div>
           <div class="setting-group">
-            <label>문제 유형</label>
-            <select id="quiz-type">
-              <option value="both" selected>혼합</option>
-              <option value="composer">작곡가 맞히기</option>
-              <option value="title">제목 맞히기</option>
-            </select>
-          </div>
-          <div class="setting-group">
             <label>보기 수</label>
             <select id="choice-count">
-              <option value="3">3지선다</option>
-              <option value="4" selected>4지선다</option>
-              <option value="5">5지선다</option>
+              <option value="4">4개</option>
+              <option value="6" selected>6개</option>
+              <option value="8">8개</option>
+              <option value="10">10개</option>
             </select>
           </div>
         </div>
-        <div class="setting-group" style="margin-bottom:16px">
+        <div class="setting-group" style="margin-bottom:14px">
           <label>포함할 영상</label>
           <div class="video-checkboxes">
             <label class="video-check"><input type="checkbox" id="v1" checked> 영상 I</label>
@@ -647,18 +193,39 @@
         <span id="q-score-live">정답: 0</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-
-      <div class="quiz-type-badge" id="q-type-badge">작곡가 맞히기</div>
+      <div class="quiz-type-badge">작곡가 · 제목 매칭</div>
 
       <div class="quiz-question-box">
-        <div class="quiz-question-text" id="q-text">이 음악의 작곡가는?</div>
-        <div class="quiz-player-area">
-          <iframe id="quiz-youtube" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-          <p class="play-hint">▶ 위 영상에서 해당 구간을 재생하세요</p>
+        <div class="quiz-question-text">다음 음악을 듣고 작곡가와 제목을 고르세요.</div>
+        <iframe id="quiz-youtube" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <p class="play-hint">▶ 위 영상에서 해당 구간을 재생하세요</p>
+      </div>
+
+      <!-- 보기: 작곡가 / 제목 두 컬럼 -->
+      <div class="exam-columns">
+        <div>
+          <div class="exam-col-title">작곡가</div>
+          <div class="exam-list" id="composer-list"></div>
+        </div>
+        <div>
+          <div class="exam-col-title">제목</div>
+          <div class="exam-list" id="title-list"></div>
         </div>
       </div>
 
-      <div class="options-grid" id="options-grid"></div>
+      <!-- 답 입력 -->
+      <div class="answer-area">
+        <div class="answer-area-title">정답 입력</div>
+        <div class="answer-inputs">
+          <span class="answer-label">작곡가</span>
+          <select class="answer-select" id="ans-composer"><option value="">선택</option></select>
+          <span class="answer-label" style="margin-left:12px">제목</span>
+          <select class="answer-select" id="ans-title"><option value="">선택</option></select>
+        </div>
+        <div class="answer-example" id="answer-example"></div>
+        <button class="submit-btn" id="submit-btn" onclick="submitAnswer()">제출하기</button>
+      </div>
+
       <div class="quiz-feedback" id="quiz-feedback"></div>
       <button class="next-btn" id="next-btn" onclick="nextQuestion()">다음 문제 →</button>
     </div>
@@ -667,7 +234,7 @@
       <div class="results-box">
         <div class="results-score" id="final-score">0</div>
         <div class="results-label" id="final-label">/ 10 정답</div>
-        <p id="final-comment" style="color:var(--muted);font-size:14px;"></p>
+        <p id="final-comment" style="color:var(--muted);font-size:13px;"></p>
         <div class="results-breakdown" id="results-breakdown"></div>
         <button class="retry-btn" onclick="resetQuiz()">다시 풀기</button>
       </div>
@@ -675,82 +242,74 @@
   </div>
 </main>
 
-<!-- Fixed bottom player -->
 <div id="player-container">
-  <div id="player-info">
-    <div id="player-composer"></div>
-    <div id="player-title"></div>
+  <div class="player-top">
+    <div id="player-info">
+      <div id="player-composer"></div>
+      <div id="player-title"></div>
+    </div>
+    <button class="close-player" onclick="closePlayer()">✕</button>
   </div>
   <iframe id="youtube-player" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-  <button class="close-player" onclick="closePlayer()">✕</button>
 </div>
 
 <script>
-const VIDEOS = {
-  1: 'Qxnq1FlvvLM',
-  2: 'ob1vi65x-xo',
-  3: 'vSBpSZpnlN4'
-};
+const VIDEOS = { 1:'Qxnq1FlvvLM', 2:'ob1vi65x-xo', 3:'vSBpSZpnlN4' };
+const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 const PIECES = [
-  // ===== LIST I =====
-  { id:1,  video:1, start:'00:06', end:'04:59', startSec:6,   composer:'Pachelbel',    title:'Canon in D major (Kanon und Gique in D-dur für drei Violinen und Basso Continuo)' },
-  { id:2,  video:1, start:'05:03', end:'11:02', startSec:303, composer:'Bach',         title:'Chaconne from Partita No.2 in d minor, BWV 1004' },
-  { id:3,  video:1, start:'11:06', end:'17:51', startSec:666, composer:'Debussy',      title:"Symphonic poem 'La mer' 2nd mov." },
-  { id:4,  video:1, start:'17:53', end:'20:24', startSec:1073,composer:'Carl Orff',    title:"Carmina Burana: 'O Fortuna'" },
-  { id:5,  video:1, start:'20:26', end:'26:59', startSec:1226,composer:'Haydn',        title:"String Quartet No.62, Op.76 No.3 'Emperor': II. Poco adagio" },
-  { id:6,  video:1, start:'27:02', end:'35:35', startSec:0,    composer:'Beethoven',    title:'Symphony No.5 in C minor, Op.67, 1st Mov.', altVideo:'I7AQeN-x_Xs' },
-  { id:7,  video:1, start:'35:38', end:'38:48', startSec:2138,composer:'Kreisler',     title:'Liebesfreud' },
-  { id:8,  video:1, start:'38:51', end:'41:46', startSec:2331,composer:'Bach/Busoni',  title:'Ich ruf zu dir Herr Jesu Christ, Chorale Prelude BWV 639' },
-  { id:9,  video:1, start:'41:51', end:'50:00', startSec:2511,composer:'Mozart',       title:'Symphony No.40 in g minor, K550, 1st Mov.' },
-  { id:10, video:1, start:'50:03', end:'59:42', startSec:3003,composer:'Schubert',     title:'Piano Trio No.2 in E flat major, D.929 Op.100: II. Andante con moto' },
-  { id:11, video:1, start:'59:44', end:'01:04:45', startSec:3584,composer:'Mendelssohn',title:'Wedding March From "A Midsummer Night\'s Dream" Op.61' },
-  { id:12, video:1, start:'01:04:47', end:'01:09:53', startSec:3887,composer:'Paganini',title:'Caprice No.24' },
-  { id:13, video:1, start:'01:09:56', end:'01:12:25', startSec:4196,composer:'Schumann',title:"Kinderszenen Op.15 No.7 'Traumerei'" },
-  { id:14, video:1, start:'01:12:26', end:'01:14:54', startSec:4346,composer:'Kapustin', title:"Eight Concert Etudes Op.40 No.6 'Pastoral'" },
-
-  // ===== LIST II =====
-  { id:15, video:2, start:'00:05', end:'03:09', startSec:5,   composer:'Vivaldi',      title:'Concerto No.4 in F minor, Op.8, RV 297, "Winter"' },
-  { id:16, video:2, start:'03:12', end:'07:05', startSec:192, composer:'Mozart',       title:'Requiem in d minor, K 626 - Lacrimosa' },
-  { id:17, video:2, start:'07:07', end:'17:06', startSec:427, composer:'Chopin',       title:'Ballade No.1 In G Minor, Op.23' },
-  { id:18, video:2, start:'17:10', end:'22:30', startSec:1030,composer:'Wagner',       title:'Ride of the Valkyries (Walkürenritt)' },
-  { id:19, video:2, start:'22:32', end:'37:34', startSec:1352,composer:'Rachmaninoff', title:'Symphony No.2 Op.27 III. Adagio: Adagio' },
-  { id:20, video:2, start:'37:36', end:'42:00', startSec:2256,composer:'W. Bolcom',    title:'Graceful Ghost Rag' },
-  { id:21, video:2, start:'42:03', end:'44:32', startSec:2523,composer:'Couperin',     title:'Les barricades mysterieuses' },
-  { id:22, video:2, start:'44:34', end:'51:29', startSec:2674,composer:'Beethoven',    title:"Piano Sonata No.14 'Moonlight': III. Presto agitato" },
-  { id:23, video:2, start:'51:31', end:'55:59', startSec:3091,composer:'Bizet',        title:"Opera 'Carmen' Habanera" },
-  { id:24, video:2, start:'56:01', end:'59:55', startSec:3361,composer:'Erik Satie',   title:'Gymnopédies No.1' },
-  { id:25, video:2, start:'59:57', end:'01:04:42', startSec:3597,composer:'Tartini',   title:'Variations on a theme of Corelli' },
-  { id:26, video:2, start:'01:04:45', end:'01:08:28', startSec:3885,composer:'Karl Jenkins',title:'Palladio: 1. Allegretto' },
-  { id:27, video:2, start:'01:08:32', end:'01:17:05', startSec:4112,composer:'Sarasate', title:'Zigeunerweisen' },
-
-  // ===== LIST III =====
-  { id:28, video:3, start:'00:05', end:'02:32', startSec:5,   composer:'Bach',         title:'Cello Suite No.1 BWV 1007, I. Prelude' },
-  { id:29, video:3, start:'02:34', end:'11:32', startSec:154, composer:'Haydn',        title:'Cello Concerto No.1 in C Major Hob.VIIb:1, 1. Moderato' },
-  { id:30, video:3, start:'11:36', end:'14:33', startSec:696, composer:'Puccini',      title:'Opera Turandot "Nessun Dorma"' },
-  { id:31, video:3, start:'14:36', end:'26:14', startSec:876, composer:'Mahler',       title:'Symphony No.5, IV. Adagietto' },
-  { id:32, video:3, start:'26:18', end:'29:55', startSec:1578,composer:'Handel',       title:"'Hallelujah Chorus' from Handel's Messiah" },
-  { id:33, video:3, start:'29:59', end:'35:39', startSec:1799,composer:'Mozart',       title:'Serenade No.13 in G Major, K.525, Eine Kleine Nachtmusik' },
-  { id:34, video:3, start:'35:41', end:'39:42', startSec:2141,composer:'Schubert',     title:'Erlkonig D.328 Op.1, G minor' },
-  { id:35, video:3, start:'39:45', end:'43:55', startSec:2385,composer:'Liszt',        title:'Etude No.3 "La Campanella"' },
-  { id:36, video:3, start:'43:57', end:'45:56', startSec:2637,composer:"Francesco D'Andrea", title:'With Some Malice' },
-  { id:37, video:3, start:'46:00', end:'01:09:37', startSec:2760,composer:'Tchaikovsky',title:'Piano Concerto No.1 Op.23 - 1. Allegro con spirito' },
-  { id:38, video:3, start:'01:09:40', end:'01:13:38', startSec:4180,composer:'Khachaturian',title:'Ballet Suite from Masquerade. 1. Waltz' },
+  {id:1,  video:1, start:'00:06', end:'04:59', startSec:6,    composer:'Pachelbel',         title:'Canon in D major'},
+  {id:2,  video:1, start:'05:03', end:'11:02', startSec:303,  composer:'Bach',               title:'Chaconne from Partita No.2 in d minor, BWV 1004'},
+  {id:3,  video:1, start:'11:06', end:'17:51', startSec:666,  composer:'Debussy',            title:"Symphonic poem 'La mer' 2nd mov."},
+  {id:4,  video:1, start:'17:53', end:'20:24', startSec:1073, composer:'Carl Orff',          title:"Carmina Burana: 'O Fortuna'"},
+  {id:5,  video:1, start:'20:26', end:'26:59', startSec:1226, composer:'Haydn',              title:"String Quartet No.62, Op.76 No.3 'Emperor': II. Poco adagio"},
+  {id:6,  video:1, start:'27:02', end:'35:35', startSec:0,    composer:'Beethoven',          title:'Symphony No.5 in C minor, Op.67, 1st Mov.', altVideo:'I7AQeN-x_Xs'},
+  {id:7,  video:1, start:'35:38', end:'38:48', startSec:2138, composer:'Kreisler',           title:'Liebesfreud'},
+  {id:8,  video:1, start:'38:51', end:'41:46', startSec:2331, composer:'Bach/Busoni',        title:'Ich ruf zu dir Herr Jesu Christ, Chorale Prelude BWV 639'},
+  {id:9,  video:1, start:'41:51', end:'50:00', startSec:2511, composer:'Mozart',             title:'Symphony No.40 in g minor, K550, 1st Mov.'},
+  {id:10, video:1, start:'50:03', end:'59:42', startSec:3003, composer:'Schubert',           title:'Piano Trio No.2 in E flat major, D.929 Op.100: II. Andante con moto'},
+  {id:11, video:1, start:'59:44', end:'01:04:45', startSec:3584, composer:'Mendelssohn',     title:'Wedding March From "A Midsummer Night\'s Dream" Op.61'},
+  {id:12, video:1, start:'01:04:47', end:'01:09:53', startSec:3887, composer:'Paganini',     title:'Caprice No.24'},
+  {id:13, video:1, start:'01:09:56', end:'01:12:25', startSec:4196, composer:'Schumann',     title:"Kinderszenen Op.15 No.7 'Traumerei'"},
+  {id:14, video:1, start:'01:12:26', end:'01:14:54', startSec:4346, composer:'Kapustin',     title:"Eight Concert Etudes Op.40 No.6 'Pastoral'"},
+  {id:15, video:2, start:'00:05', end:'03:09', startSec:5,    composer:'Vivaldi',            title:'Concerto No.4 in F minor, Op.8, RV 297, "Winter"'},
+  {id:16, video:2, start:'03:12', end:'07:05', startSec:192,  composer:'Mozart',             title:'Requiem in d minor, K 626 - Lacrimosa'},
+  {id:17, video:2, start:'07:07', end:'17:06', startSec:427,  composer:'Chopin',             title:'Ballade No.1 In G Minor, Op.23'},
+  {id:18, video:2, start:'17:10', end:'22:30', startSec:1030, composer:'Wagner',             title:'Ride of the Valkyries (Walkürenritt)'},
+  {id:19, video:2, start:'22:32', end:'37:34', startSec:1352, composer:'Rachmaninoff',       title:'Symphony No.2 Op.27 III. Adagio'},
+  {id:20, video:2, start:'37:36', end:'42:00', startSec:2256, composer:'W. Bolcom',          title:'Graceful Ghost Rag'},
+  {id:21, video:2, start:'42:03', end:'44:32', startSec:2523, composer:'Couperin',           title:'Les barricades mysterieuses'},
+  {id:22, video:2, start:'44:34', end:'51:29', startSec:2674, composer:'Beethoven',          title:"Piano Sonata No.14 'Moonlight': III. Presto agitato"},
+  {id:23, video:2, start:'51:31', end:'55:59', startSec:3091, composer:'Bizet',              title:"Opera 'Carmen' Habanera"},
+  {id:24, video:2, start:'56:01', end:'59:55', startSec:3361, composer:'Erik Satie',         title:'Gymnopédies No.1'},
+  {id:25, video:2, start:'59:57', end:'01:04:42', startSec:3597, composer:'Tartini',         title:'Variations on a theme of Corelli'},
+  {id:26, video:2, start:'01:04:45', end:'01:08:28', startSec:3885, composer:'Karl Jenkins', title:'Palladio: 1. Allegretto'},
+  {id:27, video:2, start:'01:08:32', end:'01:17:05', startSec:4112, composer:'Sarasate',     title:'Zigeunerweisen'},
+  {id:28, video:3, start:'00:05', end:'02:32', startSec:5,    composer:'Bach',               title:'Cello Suite No.1 BWV 1007, I. Prelude'},
+  {id:29, video:3, start:'02:34', end:'11:32', startSec:154,  composer:'Haydn',              title:'Cello Concerto No.1 in C Major Hob.VIIb:1, 1. Moderato'},
+  {id:30, video:3, start:'11:36', end:'14:33', startSec:696,  composer:'Puccini',            title:'Opera Turandot "Nessun Dorma"'},
+  {id:31, video:3, start:'14:36', end:'26:14', startSec:876,  composer:'Mahler',             title:'Symphony No.5, IV. Adagietto'},
+  {id:32, video:3, start:'26:18', end:'29:55', startSec:1578, composer:'Handel',             title:"'Hallelujah Chorus' from Handel's Messiah"},
+  {id:33, video:3, start:'29:59', end:'35:39', startSec:1799, composer:'Mozart',             title:'Serenade No.13 in G Major, K.525, Eine Kleine Nachtmusik'},
+  {id:34, video:3, start:'35:41', end:'39:42', startSec:2141, composer:'Schubert',           title:'Erlkonig D.328 Op.1, G minor'},
+  {id:35, video:3, start:'39:45', end:'43:55', startSec:2385, composer:'Liszt',              title:'Etude No.3 "La Campanella"'},
+  {id:36, video:3, start:'43:57', end:'45:56', startSec:2637, composer:"Francesco D'Andrea", title:'With Some Malice'},
+  {id:37, video:3, start:'46:00', end:'01:09:37', startSec:2760, composer:'Tchaikovsky',     title:'Piano Concerto No.1 Op.23 - 1. Allegro con spirito'},
+  {id:38, video:3, start:'01:09:40', end:'01:13:38', startSec:4180, composer:'Khachaturian', title:'Ballet Suite from Masquerade. 1. Waltz'},
 ];
 
-// ========== LIST ==========
+// ===== LIST =====
 function renderList(videoFilter) {
   const container = document.getElementById('piece-list');
   container.innerHTML = '';
   const filtered = videoFilter === 0 ? PIECES : PIECES.filter(p => p.video === videoFilter);
-  
   let lastVideo = null;
   filtered.forEach((p, i) => {
     if (videoFilter === 0 && p.video !== lastVideo) {
       lastVideo = p.video;
       const hdr = document.createElement('div');
       hdr.className = 'section-header';
-      hdr.textContent = `영상 ${'ⅠⅡⅢ'[p.video-1]}`;
+      hdr.textContent = '영상 ' + ['Ⅰ','Ⅱ','Ⅲ'][p.video-1];
       container.appendChild(hdr);
     }
     const card = document.createElement('div');
@@ -777,8 +336,7 @@ function filterList(v, btn) {
 
 function playPiece(p) {
   const videoId = p.altVideo || VIDEOS[p.video];
-  const src = `https://www.youtube.com/embed/${videoId}?start=${p.startSec}&autoplay=1`;
-  document.getElementById('youtube-player').src = src;
+  document.getElementById('youtube-player').src = `https://www.youtube.com/embed/${videoId}?start=${p.startSec}&autoplay=1`;
   document.getElementById('player-composer').textContent = p.composer;
   document.getElementById('player-title').textContent = p.title;
   document.getElementById('player-container').classList.add('visible');
@@ -789,70 +347,49 @@ function closePlayer() {
   document.getElementById('player-container').classList.remove('visible');
 }
 
-// ========== QUIZ ==========
-let quizQueue = [];
-let currentQ = 0;
-let score = 0;
-let quizResults = [];
-let answered = false;
-
-function getEnabledPieces() {
-  const v1 = document.getElementById('v1').checked;
-  const v2 = document.getElementById('v2').checked;
-  const v3 = document.getElementById('v3').checked;
-  return PIECES.filter(p => (p.video===1&&v1)||(p.video===2&&v2)||(p.video===3&&v3));
-}
+// ===== QUIZ =====
+let quizQueue=[], currentQ=0, score=0, quizResults=[], answered=false;
+let currentComposers=[], currentTitles=[];
 
 function shuffle(arr) {
-  const a = [...arr];
-  for (let i=a.length-1;i>0;i--) {
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
   return a;
+}
+
+function getEnabledPieces() {
+  const v1=document.getElementById('v1').checked;
+  const v2=document.getElementById('v2').checked;
+  const v3=document.getElementById('v3').checked;
+  return PIECES.filter(p=>(p.video===1&&v1)||(p.video===2&&v2)||(p.video===3&&v3));
 }
 
 function startQuiz() {
   const pool = getEnabledPieces();
-  if (pool.length < 4) { alert('최소 4곡 이상 포함된 영상을 선택해주세요.'); return; }
-
+  if(pool.length < 4){ alert('최소 4곡 이상 포함된 영상을 선택해주세요.'); return; }
   const count = Math.min(parseInt(document.getElementById('quiz-count').value), pool.length);
-  const typeMode = document.getElementById('quiz-type').value;
   const choiceN = parseInt(document.getElementById('choice-count').value);
 
   quizQueue = shuffle(pool).slice(0, count).map(piece => {
-    let type = typeMode;
-    if (type === 'both') type = Math.random() < 0.5 ? 'composer' : 'title';
-    
-    // Generate wrong options
+    // 오답 후보 (정답 제외)
     const others = shuffle(PIECES.filter(p => p.id !== piece.id));
-    const wrongs = others.slice(0, choiceN - 1);
-
-    let options, correct;
-    if (type === 'composer') {
-      correct = piece.composer;
-      options = shuffle([correct, ...wrongs.map(w => w.composer)]);
-    } else {
-      correct = piece.title;
-      options = shuffle([correct, ...wrongs.map(w => w.title)]);
-    }
-
-    return { piece, type, correct, options };
+    const wrongPieces = others.slice(0, choiceN - 1);
+    // 작곡가 보기: 정답 포함, 섞기
+    const composerOptions = shuffle([piece.composer, ...wrongPieces.map(w => w.composer)]);
+    // 제목 보기: 정답 포함, 섞기
+    const titleOptions = shuffle([piece.title, ...wrongPieces.map(w => w.title)]);
+    return { piece, composerOptions, titleOptions };
   });
 
-  currentQ = 0;
-  score = 0;
-  quizResults = [];
-
-  document.getElementById('quiz-settings-area').style.display = 'none';
+  currentQ=0; score=0; quizResults=[];
+  document.getElementById('quiz-settings-area').style.display='none';
   document.getElementById('quiz-area').classList.add('active');
   document.getElementById('quiz-results').classList.remove('show');
-
   renderQuestion();
 }
 
 function renderQuestion() {
-  if (currentQ >= quizQueue.length) { showResults(); return; }
+  if(currentQ >= quizQueue.length){ showResults(); return; }
   answered = false;
 
   const q = quizQueue[currentQ];
@@ -862,120 +399,151 @@ function renderQuestion() {
   document.getElementById('q-score-live').textContent = `정답: ${score}`;
   document.getElementById('progress-fill').style.width = `${(currentQ/total)*100}%`;
 
-  const typeLbl = q.type === 'composer' ? '작곡가 맞히기' : '제목 맞히기';
-  document.getElementById('q-type-badge').textContent = typeLbl;
-
-  if (q.type === 'composer') {
-    document.getElementById('q-text').textContent = `이 음악의 작곡가는 누구일까요?`;
-  } else {
-    document.getElementById('q-text').innerHTML = `<strong>${q.piece.composer}</strong>의 작품 제목은?`;
-  }
-
-  // Set video
+  // 유튜브
   const videoId = q.piece.altVideo || VIDEOS[q.piece.video];
-  const src = `https://www.youtube.com/embed/${videoId}?start=${q.piece.startSec}&autoplay=1`;
-  document.getElementById('quiz-youtube').src = src;
+  document.getElementById('quiz-youtube').src = `https://www.youtube.com/embed/${videoId}?start=${q.piece.startSec}&autoplay=1`;
 
-  // Options
-  const grid = document.getElementById('options-grid');
-  grid.innerHTML = '';
-  const labels = ['A', 'B', 'C', 'D', 'E'];
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.innerHTML = `<span class="opt-label">${labels[i]}</span>${opt}`;
-    btn.onclick = () => selectAnswer(btn, opt, q);
-    grid.appendChild(btn);
+  // 작곡가 보기 (알파벳)
+  currentComposers = q.composerOptions;
+  const cList = document.getElementById('composer-list');
+  cList.innerHTML = '';
+  currentComposers.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'exam-item';
+    div.innerHTML = `<span class="exam-key">${ALPHA[i]}</span><span>${c}</span>`;
+    cList.appendChild(div);
   });
 
+  // 제목 보기 (숫자)
+  currentTitles = q.titleOptions;
+  const tList = document.getElementById('title-list');
+  tList.innerHTML = '';
+  currentTitles.forEach((t, i) => {
+    const div = document.createElement('div');
+    div.className = 'exam-item';
+    div.innerHTML = `<span class="exam-key">${i+1}</span><span>${t}</span>`;
+    tList.appendChild(div);
+  });
+
+  // 드롭다운 초기화
+  const cSel = document.getElementById('ans-composer');
+  const tSel = document.getElementById('ans-title');
+  cSel.innerHTML = '<option value="">선택</option>';
+  currentComposers.forEach((_, i) => {
+    cSel.innerHTML += `<option value="${i}">${ALPHA[i]}</option>`;
+  });
+  tSel.innerHTML = '<option value="">선택</option>';
+  currentTitles.forEach((_, i) => {
+    tSel.innerHTML += `<option value="${i}">${i+1}</option>`;
+  });
+  cSel.disabled = false;
+  tSel.disabled = false;
+
+  // 정답 예시 힌트
+  document.getElementById('answer-example').textContent = `예시: 작곡가 A + 제목 3`;
+
+  document.getElementById('submit-btn').disabled = false;
   document.getElementById('quiz-feedback').className = 'quiz-feedback';
   document.getElementById('quiz-feedback').textContent = '';
   document.getElementById('next-btn').classList.remove('show');
 }
 
-function selectAnswer(btn, chosen, q) {
-  if (answered) return;
-  answered = true;
+function submitAnswer() {
+  if(answered) return;
 
-  const isCorrect = chosen === q.correct;
-  if (isCorrect) score++;
+  const cIdx = parseInt(document.getElementById('ans-composer').value);
+  const tIdx = parseInt(document.getElementById('ans-title').value);
 
-  const allBtns = document.querySelectorAll('.option-btn');
-  allBtns.forEach(b => {
-    b.disabled = true;
-    const txt = b.textContent.replace(/^[ABCDE]/, '').trim();
-    if (txt === q.correct) b.classList.add('correct');
-  });
-  if (!isCorrect) btn.classList.add('wrong');
-
-  const fb = document.getElementById('quiz-feedback');
-  if (isCorrect) {
-    fb.className = 'quiz-feedback correct-fb show';
-    fb.textContent = '✓ 정답입니다!';
-  } else {
-    fb.className = 'quiz-feedback wrong-fb show';
-    fb.textContent = `✗ 오답. 정답: ${q.correct}`;
+  if(isNaN(cIdx) || isNaN(tIdx)) {
+    alert('작곡가와 제목을 모두 선택해주세요!');
+    return;
   }
 
-  quizResults.push({ q, chosen, isCorrect });
+  answered = true;
+  document.getElementById('ans-composer').disabled = true;
+  document.getElementById('ans-title').disabled = true;
+  document.getElementById('submit-btn').disabled = true;
+
+  const q = quizQueue[currentQ];
+  const chosenComposer = currentComposers[cIdx];
+  const chosenTitle = currentTitles[tIdx];
+  const correctComposer = q.piece.composer;
+  const correctTitle = q.piece.title;
+
+  const composerOk = chosenComposer === correctComposer;
+  const titleOk = chosenTitle === correctTitle;
+  const bothOk = composerOk && titleOk;
+
+  if(bothOk) score++;
+
+  const fb = document.getElementById('quiz-feedback');
+  if(bothOk) {
+    fb.className = 'quiz-feedback correct-fb show';
+    fb.textContent = '✓ 정답! 작곡가와 제목 모두 맞혔어요!';
+  } else {
+    fb.className = 'quiz-feedback wrong-fb show';
+    let msg = '✗ 오답. ';
+    if(!composerOk) msg += `작곡가: ${ALPHA[cIdx]} → 정답은 ${ALPHA[currentComposers.indexOf(correctComposer)]} (${correctComposer}). `;
+    if(!titleOk) msg += `제목: ${tIdx+1} → 정답은 ${currentTitles.indexOf(correctTitle)+1} (${correctTitle.substring(0,40)}${correctTitle.length>40?'…':''}).`;
+    fb.textContent = msg;
+  }
+
+  quizResults.push({ q, chosenComposer, chosenTitle, composerOk, titleOk, bothOk });
   document.getElementById('q-score-live').textContent = `정답: ${score}`;
   document.getElementById('next-btn').classList.add('show');
 }
 
-function nextQuestion() {
-  currentQ++;
-  renderQuestion();
-}
+function nextQuestion(){ currentQ++; renderQuestion(); }
 
 function showResults() {
   document.getElementById('quiz-youtube').src = '';
   document.getElementById('quiz-area').classList.remove('active');
-
   const total = quizQueue.length;
   document.getElementById('final-score').textContent = score;
   document.getElementById('final-label').textContent = `/ ${total} 정답`;
-
-  const pct = score / total;
+  const pct = score/total;
   let comment = '';
-  if (pct === 1) comment = '완벽합니다! 🎼 만점이에요!';
-  else if (pct >= 0.8) comment = '훌륭해요! 시험 잘 볼 것 같은데요?';
-  else if (pct >= 0.6) comment = '조금만 더 복습하면 될 것 같아요!';
-  else comment = '곡 목록 탭에서 다시 한 번 들어보세요 💪';
+  if(pct===1) comment='완벽합니다! 🎼 만점이에요!';
+  else if(pct>=0.8) comment='훌륭해요! 시험 잘 볼 것 같은데요?';
+  else if(pct>=0.6) comment='조금만 더 복습하면 될 것 같아요!';
+  else comment='곡 목록 탭에서 다시 한 번 들어보세요 💪';
   document.getElementById('final-comment').textContent = comment;
 
   const bd = document.getElementById('results-breakdown');
   bd.innerHTML = '<div class="section-header" style="margin-top:0">문제별 결과</div>';
-  quizResults.forEach((r, i) => {
+  quizResults.forEach((r,i) => {
     const div = document.createElement('div');
     div.className = 'result-item';
     div.innerHTML = `
-      <span class="result-icon">${r.isCorrect ? '✓' : '✗'}</span>
-      <div>
-        <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace">Q${i+1} · ${r.q.type==='composer'?'작곡가':'제목'} 맞히기</div>
-        <div>${r.q.piece.composer} — ${r.q.piece.title.substring(0,50)}${r.q.piece.title.length>50?'…':''}</div>
-        ${!r.isCorrect ? `<div style="font-size:12px;color:var(--red)">내 답: ${r.chosen}</div>` : ''}
+      <div class="ri-top">
+        <span class="result-icon">${r.bothOk?'✓':'✗'}</span>
+        <div>
+          <div>${r.q.piece.composer} — ${r.q.piece.title.substring(0,45)}${r.q.piece.title.length>45?'…':''}</div>
+          <div class="result-detail">
+            작곡가 ${r.composerOk?'✓':'✗'} · 제목 ${r.titleOk?'✓':'✗'}
+            ${!r.composerOk ? ` | 내 답: ${r.chosenComposer}` : ''}
+            ${!r.titleOk ? ` | 내 답: ${r.chosenTitle.substring(0,30)}` : ''}
+          </div>
+        </div>
       </div>
     `;
     bd.appendChild(div);
   });
-
   document.getElementById('quiz-results').classList.add('show');
 }
 
 function resetQuiz() {
   document.getElementById('quiz-results').classList.remove('show');
-  document.getElementById('quiz-settings-area').style.display = '';
+  document.getElementById('quiz-settings-area').style.display='';
 }
 
-// ========== TABS ==========
-function switchTab(name) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
-  event.target.classList.add('active');
+  btn.classList.add('active');
 }
 
-// Init
 renderList(0);
 </script>
 </body>
