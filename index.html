@@ -86,7 +86,9 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
 .quiz-question-text{font-family:'Playfair Display',serif;font-size:17px;color:var(--cream);line-height:1.5;}
 #quiz-play-btn{width:56px;height:56px;border-radius:50%;flex-shrink:0;border:2px solid var(--gold);background:none;color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 #quiz-play-btn:hover{background:var(--gold);color:var(--bg);}
+#quiz-play-btn.playing{border-color:var(--green);color:var(--green);animation:pulse 1.5s ease-in-out infinite;}
 #quiz-play-btn svg{width:24px;height:24px;fill:currentColor;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(74,158,106,0.4);}50%{box-shadow:0 0 0 8px rgba(74,158,106,0);}}
 
 /* 보기 */
 .exam-columns{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
@@ -290,7 +292,12 @@ const PIECES=[
 ];
 
 // 아이콘
-function setIcon(el,type){el.querySelector('svg').innerHTML=ICON[type];}
+function setIcon(elOrId,type){
+  const el=typeof elOrId==='string'?document.getElementById(elOrId):elOrId;
+  if(!el)return;
+  const svg=el.querySelector('svg');
+  if(svg)svg.innerHTML=ICON[type];
+}
 
 // ===== LIST =====
 let currentListPiece=null;
@@ -389,16 +396,18 @@ let quizQueue=[],currentQ=0,score=0,quizResults=[],answered=false;
 let currentComposers=[],currentTitles=[],selC=null,selT=null;
 const quizAudio=document.getElementById('quiz-audio');
 
-quizAudio.addEventListener('ended',()=>{setIcon(document.getElementById('quiz-icon'),'replay');});
+quizAudio.addEventListener('ended',()=>{setIcon('quiz-play-btn','replay');document.getElementById('quiz-play-btn').classList.remove('playing');});
+quizAudio.addEventListener('play',()=>{document.getElementById('quiz-play-btn').classList.add('playing');});
+quizAudio.addEventListener('pause',()=>{document.getElementById('quiz-play-btn').classList.remove('playing');});
 
 function toggleQuizAudio(){
   if(quizAudio.paused){
     if(quizAudio.ended)quizAudio.currentTime=0;
     quizAudio.play();
-    setIcon(document.getElementById('quiz-icon'),'pause');
+    setIcon('quiz-play-btn','pause');
   }else{
     quizAudio.pause();
-    setIcon(document.getElementById('quiz-icon'),'play');
+    setIcon('quiz-play-btn','play');
   }
 }
 
@@ -442,8 +451,8 @@ function renderQuestion(){
 
   quizAudio.src=BASE+q.piece.file;
   quizAudio.load();
-  setIcon(document.getElementById('quiz-icon'),'pause');
-  quizAudio.play().catch(()=>setIcon(document.getElementById('quiz-icon'),'play'));
+  setIcon('quiz-play-btn','pause');
+  quizAudio.play().catch(()=>setIcon('quiz-play-btn','play'));
 
   // 작곡가 보기
   currentComposers=q.composerOptions;
