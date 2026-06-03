@@ -112,7 +112,7 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
 .exam-item.selected{border:1.5px solid var(--gold);background:rgba(201,168,76,0.12);}
 .exam-item.correct{border:1.5px solid var(--green);background:rgba(74,158,106,0.15);}
 .exam-item.wrong{border:1.5px solid var(--red);background:rgba(196,75,58,0.15);}
-.exam-item.disabled{cursor:default;}
+.exam-item.disabled{cursor:default;pointer-events:none;}
 .exam-key{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);min-width:20px;flex-shrink:0;margin-top:1px;}
 
 .submit-btn{background:var(--gold);border:none;color:var(--bg);font-family:'Space Mono',monospace;font-size:12px;letter-spacing:2px;padding:12px 0;cursor:pointer;text-transform:uppercase;transition:all .2s;width:100%;}
@@ -748,13 +748,13 @@ function submitDescAnswer(){
   document.getElementById('desc-submit-btn').disabled=true;
 
   const fb=document.getElementById('desc-quiz-feedback');
-  const pieceInfo=`<div class="fb-piece-info"><span class="fb-label">이 곡</span><span class="fb-piece-text">${q.piece.composer} — ${q.piece.title}</span></div>`;
+  const pieceInfo=`<div class="fb-piece-info"><span class="fb-label">곡 정보</span><span class="fb-piece-text">${q.piece.composer} — ${q.piece.title}</span></div>`;
   if(ok){
     fb.className='quiz-feedback correct-fb show';
     fb.innerHTML=`<strong>✓ 정답!</strong>${pieceInfo}`;
   } else {
     fb.className='quiz-feedback wrong-fb show';
-    fb.innerHTML=`<div class="fb-title">✗ 오답</div><div class="fb-row"><div class="fb-row-top"><span class="fb-label">정답</span></div><div class="fb-detail">${correctIdx+1}번 보기</div></div>${pieceInfo}`;
+    fb.innerHTML=`<div class="fb-title">✗ 오답</div><div class="fb-row"><div class="fb-row-top"><span class="fb-label">정답</span><span class="fb-detail" style="padding-left:0">${correctIdx+1}번 보기</span></div></div>${pieceInfo}`;
   }
 
   quizResults.push({q,ok,type:'desc'});
