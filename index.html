@@ -75,6 +75,10 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
 .setting-group{display:flex;flex-direction:column;gap:5px;}
 .setting-group label{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
 .setting-group select{background:var(--surface2);border:1px solid var(--border);color:var(--cream);font-family:'Space Mono',monospace;font-size:12px;padding:7px 10px;cursor:pointer;}
+.mode-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.mode-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;padding:8px 14px;cursor:pointer;transition:all .2s;letter-spacing:1px;}
+.mode-btn.active{background:var(--gold);border-color:var(--gold);color:var(--bg);}
+.mode-btn:hover:not(.active){border-color:var(--gold);color:var(--gold);}
 .era-checkboxes{display:flex;gap:12px;flex-wrap:wrap;}
 .era-check{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;}
 .era-check input{accent-color:var(--gold);}
@@ -182,8 +186,8 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
               <option value="33">전체</option>
             </select>
           </div>
-          <div class="setting-group">
-            <label>보기 수</label>
+          <div class="setting-group" id="choice-count-group">
+            <label>매칭 보기 수</label>
             <select id="choice-count">
               <option value="4">4개</option>
               <option value="6" selected>6개</option>
@@ -194,11 +198,12 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
         </div>
         <div class="setting-group" style="margin-bottom:14px">
           <label>문제 유형</label>
-          <select id="quiz-mode" onchange="toggleCountVisibility()">
-            <option value="match">작곡가·제목 매칭</option>
-            <option value="desc">작품 설명 (Q1·Q2)</option>
-            <option value="real" selected>실전 (매칭7~8 + 설명2~3)</option>
-          </select>
+          <div class="mode-btns">
+            <button class="mode-btn" id="mode-match" onclick="setMode('match',this)">작곡가·제목 매칭</button>
+            <button class="mode-btn" id="mode-desc" onclick="setMode('desc',this)">작품 설명</button>
+            <button class="mode-btn active" id="mode-real" onclick="setMode('real',this)">실전</button>
+          </div>
+          <input type="hidden" id="quiz-mode" value="real">
         </div>
         <div class="setting-group" style="margin-bottom:14px">
           <label>포함할 시대</label>
@@ -220,25 +225,19 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
       </div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
       <div class="quiz-type-badge" id="quiz-type-badge">작곡가 · 제목 매칭</div>
+
+      <!-- 공통 재생 버튼 + 문제 텍스트 -->
       <div class="quiz-question-box">
         <div class="quiz-question-row">
-          <div class="quiz-question-text">다음 음악을 듣고<br>작곡가와 제목을 고르세요.</div>
+          <div class="quiz-question-text" id="quiz-q-text">다음 음악을 듣고<br>작곡가와 제목을 고르세요.</div>
           <button id="quiz-play-btn" onclick="toggleQuizAudio()">
             <svg id="quiz-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
           </button>
         </div>
       </div>
 
-      <!-- 설명 문제 영역 -->
+      <!-- 설명 문제 보기 -->
       <div id="desc-question-area" style="display:none;">
-        <div class="quiz-question-box" style="margin-bottom:16px;">
-          <div class="quiz-question-row">
-            <div class="quiz-question-text" id="desc-q-text">다음 감상 곡에 대한 설명으로 올바른 것은?</div>
-            <button id="desc-play-btn" onclick="toggleQuizAudio()" style="width:56px;height:56px;border-radius:50%;flex-shrink:0;border:2px solid var(--gold);background:none;color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;">
-              <svg id="desc-play-icon" viewBox="0 0 24 24" style="width:24px;height:24px;fill:currentColor;"><path d="M8 5v14l11-7z"/></svg>
-            </button>
-          </div>
-        </div>
         <div class="exam-list" id="desc-options-list" style="margin-bottom:16px;"></div>
         <button class="submit-btn" id="desc-submit-btn" onclick="submitDescAnswer()" disabled>제출하기</button>
         <div class="quiz-feedback" id="desc-quiz-feedback"></div>
@@ -540,7 +539,7 @@ function renderQuestion(){
   document.getElementById('submit-btn').style.display='';
   document.getElementById('desc-submit-btn').disabled=true;
   document.getElementById('desc-quiz-feedback').className='quiz-feedback';
-  setIcon('desc-play-btn','play');
+  document.getElementById('quiz-q-text').textContent='다음 음악을 듣고\n작곡가와 제목을 고르세요.';
 
   const q=quizQueue[currentQ];
   const total=quizQueue.length;
@@ -697,13 +696,13 @@ function renderDescQuestion(){
   document.getElementById('submit-btn').style.display='none';
   document.getElementById('desc-submit-btn').disabled=true;
 
-  document.getElementById('desc-q-text').textContent=qdata.q;
+  document.getElementById('quiz-q-text').textContent=qdata.q;
 
   // 오디오
   quizAudio.src=BASE+q.piece.file;
   quizAudio.load();
-  setIcon('desc-play-btn','pause');
-  quizAudio.play().catch(()=>setIcon('desc-play-btn','play'));
+  setIcon('quiz-play-btn','pause');
+  quizAudio.play().catch(()=>setIcon('quiz-play-btn','play'));
 
   descSelIdx=null;
   const list=document.getElementById('desc-options-list');
@@ -756,10 +755,18 @@ function submitDescAnswer(){
   document.getElementById('next-btn').classList.add('show');
 }
 
+function setMode(mode, btn){
+  document.getElementById('quiz-mode').value=mode;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  toggleCountVisibility();
+}
 function toggleCountVisibility(){
   const mode=document.getElementById('quiz-mode').value;
   const countGroup=document.getElementById('quiz-count-group');
-  if(countGroup) countGroup.style.display=mode==='real'?'none':'flex';
+  const choiceGroup=document.getElementById('choice-count-group');
+  if(countGroup) countGroup.style.display=mode==='real'?'none':'';
+  if(choiceGroup) choiceGroup.style.display=mode==='desc'?'none':'';
 }
 function resetQuiz(){
   document.getElementById('quiz-results').classList.remove('show');
@@ -775,6 +782,7 @@ function switchTab(name,btn){
 }
 
 renderList('all');
+toggleCountVisibility();
 </script>
 </body>
 </html>
