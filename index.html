@@ -535,12 +535,16 @@ function renderQuestion(){
   if(currentQ>=quizQueue.length){showResults();return;}
   answered=false;selC=null;selT=null;descSelIdx=null;
 
-  // reset desc area
+  // reset all
   document.getElementById('desc-question-area').style.display='none';
   document.getElementById('exam-columns-area').style.display='block';
   document.getElementById('submit-btn').style.display='';
   document.getElementById('desc-submit-btn').disabled=true;
-  document.getElementById('desc-quiz-feedback').className='quiz-feedback';
+  const descFb=document.getElementById('desc-quiz-feedback');
+  descFb.className='quiz-feedback'; descFb.innerHTML='';
+  const matchFb=document.getElementById('quiz-feedback');
+  matchFb.className='quiz-feedback'; matchFb.innerHTML='';
+  document.getElementById('next-btn').classList.remove('show');
   document.getElementById('quiz-q-text').textContent='다음 음악을 듣고\n작곡가와 제목을 고르세요.';
 
   const q=quizQueue[currentQ];
@@ -593,10 +597,6 @@ function renderQuestion(){
   });
 
   document.getElementById('submit-btn').disabled=true;
-  const fbEl=document.getElementById('quiz-feedback');
-  fbEl.className='quiz-feedback';
-  fbEl.innerHTML='';
-  document.getElementById('next-btn').classList.remove('show');
 }
 
 function selectComposer(idx){
