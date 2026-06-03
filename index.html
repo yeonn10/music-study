@@ -127,6 +127,8 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
 .fb-ok{font-size:13px;color:var(--green);font-weight:600;}
 .fb-ng{font-size:13px;color:var(--red);font-weight:600;}
 .fb-detail{font-size:12px;color:var(--cream);opacity:0.8;line-height:1.5;padding-left:52px;}
+.fb-piece-info{display:flex;align-items:flex-start;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1);}
+.fb-piece-text{font-size:12px;color:var(--cream);opacity:0.8;line-height:1.5;}
 .quiz-feedback.wrong-fb{border-color:var(--red);color:var(--red);}
 .quiz-feedback.show{display:block;}
 .next-btn{background:none;border:1px solid var(--gold);color:var(--gold);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;padding:11px 28px;cursor:pointer;text-transform:uppercase;display:none;transition:all .2s;margin-top:4px;}
@@ -707,18 +709,16 @@ function renderDescQuestion(){
   descSelIdx=null;
   const list=document.getElementById('desc-options-list');
   list.innerHTML='';
-  // 섞인 보기 (정답 위치 기억)
-  const indices=[0,1,2,3,4];
-  const shuffled=indices.slice().sort(()=>Math.random()-.5);
-  const correctShuffledIdx=shuffled.indexOf(qdata.ans);
-  // store correct idx for submit
+  // 보기 섞기 - 정답 위치 추적
+  const shuffled=qdata.opts.map((opt,i)=>({opt,orig:i})).sort(()=>Math.random()-.5);
+  const correctShuffledIdx=shuffled.findIndex(o=>o.orig===qdata.ans);
   list.dataset.correctIdx=correctShuffledIdx;
   list.dataset.qtype=qtype;
 
-  shuffled.forEach((origIdx,i)=>{
+  shuffled.forEach(({opt},i)=>{
     const div=document.createElement('div');
     div.className='exam-item';
-    div.innerHTML=`<span class="exam-key">(${i+1})</span><span>${qdata.opts[origIdx]}</span>`;
+    div.innerHTML=`<span class="exam-key">(${i+1})</span><span>${opt}</span>`;
     div.addEventListener('click',()=>{
       if(answered)return;
       descSelIdx=i;
@@ -734,6 +734,7 @@ function submitDescAnswer(){
   answered=true;
   quizAudio.pause();
 
+  const q=quizQueue[currentQ];
   const list=document.getElementById('desc-options-list');
   const correctIdx=parseInt(list.dataset.correctIdx);
   const ok=descSelIdx===correctIdx;
@@ -747,10 +748,16 @@ function submitDescAnswer(){
   document.getElementById('desc-submit-btn').disabled=true;
 
   const fb=document.getElementById('desc-quiz-feedback');
-  if(ok){fb.className='quiz-feedback correct-fb show';fb.innerHTML='<strong>✓ 정답!</strong>';}
-  else{fb.className='quiz-feedback wrong-fb show';fb.innerHTML=`<div class="fb-title">✗ 오답</div><div class="fb-row"><div class="fb-row-top"><span class="fb-label">정답</span></div><div class="fb-detail">(${correctIdx+1}번 보기</div></div>`;}
+  const pieceInfo=`<div class="fb-piece-info"><span class="fb-label">이 곡</span><span class="fb-piece-text">${q.piece.composer} — ${q.piece.title}</span></div>`;
+  if(ok){
+    fb.className='quiz-feedback correct-fb show';
+    fb.innerHTML=`<strong>✓ 정답!</strong>${pieceInfo}`;
+  } else {
+    fb.className='quiz-feedback wrong-fb show';
+    fb.innerHTML=`<div class="fb-title">✗ 오답</div><div class="fb-row"><div class="fb-row-top"><span class="fb-label">정답</span></div><div class="fb-detail">${correctIdx+1}번 보기</div></div>${pieceInfo}`;
+  }
 
-  quizResults.push({q:quizQueue[currentQ],ok,type:'desc'});
+  quizResults.push({q,ok,type:'desc'});
   document.getElementById('q-score-live').textContent=`정답: ${score}`;
   document.getElementById('next-btn').classList.add('show');
 }
