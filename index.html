@@ -437,8 +437,15 @@ function startQuiz(){
   const choiceN=parseInt(document.getElementById('choice-count').value);
   quizQueue=shuffle(pool).slice(0,count).map(piece=>{
     const others=shuffle(PIECES.filter(p=>p.id!==piece.id));
-    const wrongs=others.slice(0,choiceN-1);
-    return{piece,composerOptions:shuffle([piece.composer,...wrongs.map(w=>w.composer)]),titleOptions:shuffle([piece.title,...wrongs.map(w=>w.title)])};
+    // 작곡가 중복 제거
+    const wrongComposers=[];
+    const seenC=new Set([piece.composer]);
+    for(const p of others){if(!seenC.has(p.composer)){seenC.add(p.composer);wrongComposers.push(p.composer);}if(wrongComposers.length>=choiceN-1)break;}
+    // 제목 중복 제거
+    const wrongTitles=[];
+    const seenT=new Set([piece.title]);
+    for(const p of others){if(!seenT.has(p.title)){seenT.add(p.title);wrongTitles.push(p.title);}if(wrongTitles.length>=choiceN-1)break;}
+    return{piece,composerOptions:shuffle([piece.composer,...wrongComposers]),titleOptions:shuffle([piece.title,...wrongTitles])};
   });
   currentQ=0;score=0;quizResults=[];
   document.getElementById('quiz-settings-area').style.display='none';
