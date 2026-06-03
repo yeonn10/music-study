@@ -593,7 +593,9 @@ function renderQuestion(){
   });
 
   document.getElementById('submit-btn').disabled=true;
-  document.getElementById('quiz-feedback').className='quiz-feedback';
+  const fbEl=document.getElementById('quiz-feedback');
+  fbEl.className='quiz-feedback';
+  fbEl.innerHTML='';
   document.getElementById('next-btn').classList.remove('show');
 }
 
