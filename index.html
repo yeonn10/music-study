@@ -30,6 +30,7 @@
   .list-filters { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
   .filter-btn { background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 1px; padding: 6px 12px; cursor: pointer; transition: all .2s; text-transform: uppercase; }
   .filter-btn.active, .filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+
   .piece-card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid var(--border); background: var(--surface); margin-bottom: 6px; transition: all .2s; position: relative; overflow: hidden; }
   .piece-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--gold); transform: scaleY(0); transition: transform .2s; }
   .piece-card:hover { background: var(--surface2); border-color: var(--gold); }
@@ -38,26 +39,27 @@
   .piece-info { flex: 1; }
   .piece-composer { font-size: 10px; color: var(--gold-light); font-family: 'Space Mono', monospace; letter-spacing: 1px; margin-bottom: 3px; }
   .piece-title { font-size: 14px; color: var(--cream); line-height: 1.4; }
-  .piece-time { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); margin-top: 3px; }
-  .piece-video-tag { font-family: 'Space Mono', monospace; font-size: 9px; padding: 2px 5px; border: 1px solid var(--border); color: var(--muted); min-width: 28px; text-align: center; }
-  .section-header { font-family: 'Playfair Display', serif; font-size: 12px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; margin: 20px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  .piece-title-ko { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-  /* 심플 재생 버튼 */
+  .section-header {
+    font-family: 'Playfair Display', serif; font-size: 13px; color: var(--gold);
+    letter-spacing: 3px; text-transform: uppercase; margin: 24px 0 10px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-header .era-ko { font-family: 'Noto Serif KR', serif; font-size: 12px; letter-spacing: 0; color: var(--muted); }
+
+  /* 재생 버튼 — SVG 아이콘 */
   .play-btn {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    border: 1px solid var(--gold);
-    background: none;
-    color: var(--gold);
-    font-size: 16px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    transition: all .2s;
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1.5px solid var(--gold); background: none;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all .2s; color: var(--gold);
   }
   .play-btn:hover { background: var(--gold); color: var(--bg); }
   .play-btn.playing { border-color: var(--green); color: var(--green); }
   .play-btn.playing:hover { background: var(--green); color: var(--bg); }
+  .play-btn svg { width: 16px; height: 16px; fill: currentColor; }
 
   /* PLAYER */
   #player-container { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface2); border-top: 1px solid var(--gold); padding: 14px 20px; z-index: 100; display: none; align-items: center; gap: 16px; }
@@ -67,13 +69,13 @@
   #player-title { font-size: 13px; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #player-play-btn {
     width: 48px; height: 48px; border-radius: 50%;
-    border: 2px solid var(--gold); background: none;
-    color: var(--gold); font-size: 20px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--gold); background: none; color: var(--gold);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
     flex-shrink: 0; transition: all .2s;
   }
   #player-play-btn:hover { background: var(--gold); color: var(--bg); }
-  .close-player { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 14px; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  #player-play-btn svg { width: 20px; height: 20px; fill: currentColor; }
+  .close-player { background: none; border: 1px solid var(--border); color: var(--muted); width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
   .close-player:hover { border-color: var(--red); color: var(--red); }
 
   /* QUIZ SETTINGS */
@@ -83,9 +85,9 @@
   .setting-group { display: flex; flex-direction: column; gap: 5px; }
   .setting-group label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
   .setting-group select { background: var(--surface2); border: 1px solid var(--border); color: var(--cream); font-family: 'Space Mono', monospace; font-size: 12px; padding: 7px 10px; cursor: pointer; }
-  .video-checkboxes { display: flex; gap: 12px; flex-wrap: wrap; }
-  .video-check { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; }
-  .video-check input { accent-color: var(--gold); }
+  .era-checkboxes { display: flex; gap: 12px; flex-wrap: wrap; }
+  .era-check { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; }
+  .era-check input { accent-color: var(--gold); }
   .start-btn { background: var(--gold); border: none; color: var(--bg); font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; padding: 12px 0; cursor: pointer; width: 100%; transition: all .2s; letter-spacing: 1px; margin-top: 4px; }
   .start-btn:hover { background: var(--gold-light); }
 
@@ -97,24 +99,20 @@
   .progress-fill { height: 100%; background: var(--gold); transition: width .3s; }
   .quiz-type-badge { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 2px; padding: 3px 8px; border: 1px solid var(--gold); color: var(--gold); display: inline-block; margin-bottom: 12px; text-transform: uppercase; }
   .quiz-question-box { background: var(--surface); border: 1px solid var(--border); padding: 20px; margin-bottom: 16px; }
-  .quiz-question-text { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--cream); line-height: 1.4; margin-bottom: 16px; }
+  .quiz-question-text { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--cream); line-height: 1.4; margin-bottom: 20px; }
 
   /* 퀴즈 오디오 플레이어 */
-  .quiz-audio-player {
-    display: flex; align-items: center; justify-content: center;
-    padding: 20px 0 8px;
-  }
+  .quiz-audio-player { display: flex; align-items: center; justify-content: center; padding: 8px 0; }
   #quiz-play-btn {
     width: 64px; height: 64px; border-radius: 50%;
-    border: 2px solid var(--gold); background: none;
-    color: var(--gold); font-size: 28px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--gold); background: none; color: var(--gold);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
     transition: all .2s;
   }
   #quiz-play-btn:hover { background: var(--gold); color: var(--bg); }
-  #quiz-play-btn.ended { border-color: var(--muted); color: var(--muted); font-size: 18px; }
+  #quiz-play-btn svg { width: 28px; height: 28px; fill: currentColor; }
 
-  /* 보기 — 터치로 선택 */
+  /* 보기 */
   .exam-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
   .exam-col-title { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
   .exam-list { display: flex; flex-direction: column; gap: 4px; }
@@ -130,12 +128,10 @@
   .exam-item.wrong { border-color: var(--red); background: rgba(196,75,58,0.15); }
   .exam-item.disabled { cursor: default; }
   .exam-key { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--gold); min-width: 20px; flex-shrink: 0; margin-top: 1px; }
-  .exam-item.selected .exam-key { color: var(--gold-light); }
 
   .submit-btn { background: var(--gold); border: none; color: var(--bg); font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 2px; padding: 12px 0; cursor: pointer; text-transform: uppercase; transition: all .2s; margin-top: 4px; width: 100%; }
   .submit-btn:hover { background: var(--gold-light); }
   .submit-btn:disabled { background: var(--border); color: var(--muted); cursor: default; }
-
   .quiz-feedback { padding: 14px 16px; border: 1px solid var(--border); margin-bottom: 14px; display: none; font-size: 13px; line-height: 1.6; }
   .quiz-feedback.correct-fb { border-color: var(--green); color: var(--green); }
   .quiz-feedback.wrong-fb { border-color: var(--red); color: var(--red); }
@@ -166,7 +162,7 @@
 <header>
   <p class="subtitle">2026-1 · 기말고사 대비</p>
   <h1>음악의 세계와 <span>감상</span></h1>
-  <p class="header-meta">총 38곡 · 영상 3개 · 객관식 퀴즈</p>
+  <p class="header-meta">총 33곡 · 시대별 분류 · 객관식 퀴즈</p>
 </header>
 
 <nav>
@@ -177,10 +173,11 @@
 <main>
   <div id="tab-list" class="tab-content active">
     <div class="list-filters">
-      <button class="filter-btn active" onclick="filterList(0, this)">전체 (38)</button>
-      <button class="filter-btn" onclick="filterList(1, this)">영상 I (14)</button>
-      <button class="filter-btn" onclick="filterList(2, this)">영상 II (13)</button>
-      <button class="filter-btn" onclick="filterList(3, this)">영상 III (11)</button>
+      <button class="filter-btn active" onclick="filterList('all', this)">전체 (33)</button>
+      <button class="filter-btn" onclick="filterList('baroque', this)">바로크</button>
+      <button class="filter-btn" onclick="filterList('classical', this)">고전</button>
+      <button class="filter-btn" onclick="filterList('romantic', this)">낭만</button>
+      <button class="filter-btn" onclick="filterList('modern', this)">20세기·현대</button>
     </div>
     <div id="piece-list"></div>
   </div>
@@ -196,7 +193,7 @@
               <option value="5">5문제</option>
               <option value="10" selected>10문제</option>
               <option value="15">15문제</option>
-              <option value="38">전체</option>
+              <option value="33">전체</option>
             </select>
           </div>
           <div class="setting-group">
@@ -210,11 +207,12 @@
           </div>
         </div>
         <div class="setting-group" style="margin-bottom:14px">
-          <label>포함할 영상</label>
-          <div class="video-checkboxes">
-            <label class="video-check"><input type="checkbox" id="v1" checked> 영상 I</label>
-            <label class="video-check"><input type="checkbox" id="v2" checked> 영상 II</label>
-            <label class="video-check"><input type="checkbox" id="v3" checked> 영상 III</label>
+          <label>포함할 시대</label>
+          <div class="era-checkboxes">
+            <label class="era-check"><input type="checkbox" id="e-baroque" checked> 바로크</label>
+            <label class="era-check"><input type="checkbox" id="e-classical" checked> 고전</label>
+            <label class="era-check"><input type="checkbox" id="e-romantic" checked> 낭만</label>
+            <label class="era-check"><input type="checkbox" id="e-modern" checked> 20세기·현대</label>
           </div>
         </div>
         <button class="start-btn" onclick="startQuiz()">퀴즈 시작 ▶</button>
@@ -228,14 +226,14 @@
       </div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
       <div class="quiz-type-badge">작곡가 · 제목 매칭</div>
-
       <div class="quiz-question-box">
         <div class="quiz-question-text">다음 음악을 듣고 작곡가와 제목을 고르세요.</div>
         <div class="quiz-audio-player">
-          <button id="quiz-play-btn" onclick="toggleQuizAudio()">▶</button>
+          <button id="quiz-play-btn" onclick="toggleQuizAudio()">
+            <svg id="quiz-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </button>
         </div>
       </div>
-
       <div class="exam-columns">
         <div>
           <div class="exam-col-title">작곡가</div>
@@ -246,7 +244,6 @@
           <div class="exam-list" id="title-list"></div>
         </div>
       </div>
-
       <button class="submit-btn" id="submit-btn" onclick="submitAnswer()" disabled>제출하기</button>
       <div class="quiz-feedback" id="quiz-feedback"></div>
       <button class="next-btn" id="next-btn" onclick="nextQuestion()">다음 문제 →</button>
@@ -264,9 +261,10 @@
   </div>
 </main>
 
-<!-- 하단 플레이어 -->
 <div id="player-container">
-  <button id="player-play-btn" onclick="toggleListAudio()">▶</button>
+  <button id="player-play-btn" onclick="toggleListAudio()">
+    <svg id="player-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+  </button>
   <div id="player-info">
     <div id="player-composer"></div>
     <div id="player-title"></div>
@@ -274,7 +272,6 @@
   <button class="close-player" onclick="closePlayer()">✕</button>
 </div>
 
-<!-- 숨긴 오디오 엘리먼트 -->
 <audio id="list-audio"></audio>
 <audio id="quiz-audio"></audio>
 
@@ -282,122 +279,136 @@
 const BASE = 'https://raw.githubusercontent.com/yeonn10/music-study/master/quiz_audio/';
 const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
+// SVG 아이콘
+const ICON = {
+  play:  '<path d="M8 5v14l11-7z"/>',
+  pause: '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>',
+  replay:'<path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>'
+};
+
+const ERAS = {
+  baroque:   { label: 'Baroque', ko: '바로크' },
+  classical: { label: 'Classical', ko: '고전' },
+  romantic:  { label: 'Romantic', ko: '낭만' },
+  modern:    { label: '20th·Modern', ko: '20세기·현대' },
+};
+
 const PIECES = [
-  {id:1,  video:1, start:'00:06', end:'04:59', file:'01_Pachelbel_Canon.m4a',           composer:'Pachelbel',         title:'Canon in D major'},
-  {id:2,  video:1, start:'05:03', end:'11:02', file:'02_Bach_Chaconne.m4a',             composer:'Bach',               title:'Chaconne from Partita No.2 in d minor, BWV 1004'},
-  {id:3,  video:1, start:'11:06', end:'17:51', file:'03_Debussy_LaMer.m4a',             composer:'Debussy',            title:"Symphonic poem 'La mer' 2nd mov."},
-  {id:4,  video:1, start:'17:53', end:'20:24', file:'04_CarlOrff_OFortuna.m4a',         composer:'Carl Orff',          title:"Carmina Burana: 'O Fortuna'"},
-  {id:5,  video:1, start:'20:26', end:'26:59', file:'05_Haydn_Emperor.m4a',             composer:'Haydn',              title:"String Quartet No.62, Op.76 No.3 'Emperor': II. Poco adagio"},
-  {id:6,  video:1, start:'27:02', end:'35:35', file:'06_Beethoven_Sym5.m4a',            composer:'Beethoven',          title:'Symphony No.5 in C minor, Op.67, 1st Mov.'},
-  {id:7,  video:1, start:'35:38', end:'38:48', file:'07_Kreisler_Liebesfreud.m4a',      composer:'Kreisler',           title:'Liebesfreud'},
-  {id:8,  video:1, start:'38:51', end:'41:46', file:'08_BachBusoni_IchRuf.m4a',         composer:'Bach/Busoni',        title:'Ich ruf zu dir Herr Jesu Christ, Chorale Prelude BWV 639'},
-  {id:9,  video:1, start:'41:51', end:'50:00', file:'09_Mozart_Sym40.m4a',              composer:'Mozart',             title:'Symphony No.40 in g minor, K550, 1st Mov.'},
-  {id:10, video:1, start:'50:03', end:'59:42', file:'10_Schubert_PianoTrio.m4a',        composer:'Schubert',           title:'Piano Trio No.2 in E flat major, D.929 Op.100: II. Andante con moto'},
-  {id:11, video:1, start:'59:44', end:'01:04:45', file:'11_Mendelssohn_Wedding.m4a',    composer:'Mendelssohn',        title:'Wedding March From "A Midsummer Night\'s Dream" Op.61'},
-  {id:12, video:1, start:'01:04:47', end:'01:09:53', file:'12_Paganini_Caprice24.m4a',  composer:'Paganini',           title:'Caprice No.24'},
-  {id:13, video:1, start:'01:09:56', end:'01:12:25', file:'13_Schumann_Traumerei.m4a',  composer:'Schumann',           title:"Kinderszenen Op.15 No.7 'Traumerei'"},
-  {id:14, video:1, start:'01:12:26', end:'01:14:54', file:'14_Kapustin_Pastoral.m4a',   composer:'Kapustin',           title:"Eight Concert Etudes Op.40 No.6 'Pastoral'"},
-  {id:15, video:2, start:'00:05', end:'03:09',    file:'15_Vivaldi_Winter.m4a',         composer:'Vivaldi',            title:'Concerto No.4 in F minor, Op.8, RV 297, "Winter"'},
-  {id:16, video:2, start:'03:12', end:'07:05',    file:'16_Mozart_Lacrimosa.m4a',       composer:'Mozart',             title:'Requiem in d minor, K 626 - Lacrimosa'},
-  {id:17, video:2, start:'07:07', end:'17:06',    file:'17_Chopin_Ballade1.m4a',        composer:'Chopin',             title:'Ballade No.1 In G Minor, Op.23'},
-  {id:18, video:2, start:'17:10', end:'22:30',    file:'18_Wagner_Valkyries.m4a',       composer:'Wagner',             title:'Ride of the Valkyries (Walkürenritt)'},
-  {id:19, video:2, start:'22:32', end:'37:34',    file:'19_Rachmaninoff_Sym2.m4a',      composer:'Rachmaninoff',       title:'Symphony No.2 Op.27 III. Adagio'},
-  {id:20, video:2, start:'37:36', end:'42:00',    file:'20_Bolcom_GracefulGhost.m4a',   composer:'W. Bolcom',          title:'Graceful Ghost Rag'},
-  {id:21, video:2, start:'42:03', end:'44:32',    file:'21_Couperin_Barricades.m4a',    composer:'Couperin',           title:'Les barricades mysterieuses'},
-  {id:22, video:2, start:'44:34', end:'51:29',    file:'22_Beethoven_Moonlight.m4a',    composer:'Beethoven',          title:"Piano Sonata No.14 'Moonlight': III. Presto agitato"},
-  {id:23, video:2, start:'51:31', end:'55:59',    file:'23_Bizet_Carmen.m4a',           composer:'Bizet',              title:"Opera 'Carmen' Habanera"},
-  {id:24, video:2, start:'56:01', end:'59:55',    file:'24_ErikSatie_Gymnopedie.m4a',   composer:'Erik Satie',         title:'Gymnopédies No.1'},
-  {id:25, video:2, start:'59:57', end:'01:04:42', file:'25_Tartini_Corelli.m4a',        composer:'Tartini',            title:'Variations on a theme of Corelli'},
-  {id:26, video:2, start:'01:04:45', end:'01:08:28', file:'26_KarlJenkins_Palladio.m4a',composer:'Karl Jenkins',       title:'Palladio: 1. Allegretto'},
-  {id:27, video:2, start:'01:08:32', end:'01:17:05', file:'27_Sarasate_Zigeuner.m4a',   composer:'Sarasate',           title:'Zigeunerweisen'},
-  {id:28, video:3, start:'00:05', end:'02:32',    file:'28_Bach_CelloSuite1.m4a',       composer:'Bach',               title:'Cello Suite No.1 BWV 1007, I. Prelude'},
-  {id:29, video:3, start:'02:34', end:'11:32',    file:'29_Haydn_CelloConcerto.m4a',    composer:'Haydn',              title:'Cello Concerto No.1 in C Major Hob.VIIb:1, 1. Moderato'},
-  {id:30, video:3, start:'11:36', end:'14:33',    file:'30_Puccini_NessunDorma.m4a',    composer:'Puccini',            title:'Opera Turandot "Nessun Dorma"'},
-  {id:31, video:3, start:'14:36', end:'26:14',    file:'31_Mahler_Sym5.m4a',            composer:'Mahler',             title:'Symphony No.5, IV. Adagietto'},
-  {id:32, video:3, start:'26:18', end:'29:55',    file:'32_Handel_Hallelujah.m4a',      composer:'Handel',             title:"'Hallelujah Chorus' from Handel's Messiah"},
-  {id:33, video:3, start:'29:59', end:'35:39',    file:'33_Mozart_EineKleine.m4a',      composer:'Mozart',             title:'Serenade No.13 in G Major, K.525, Eine Kleine Nachtmusik'},
-  {id:34, video:3, start:'35:41', end:'39:42',    file:'34_Schubert_Erlkonig.m4a',      composer:'Schubert',           title:'Erlkonig D.328 Op.1, G minor'},
-  {id:35, video:3, start:'39:45', end:'43:55',    file:'35_Liszt_LaCampanella.m4a',     composer:'Liszt',              title:'Etude No.3 "La Campanella"'},
-  {id:36, video:3, start:'43:57', end:'45:56',    file:'36_DAndrea_WithMalice.m4a',     composer:"Francesco D'Andrea", title:'With Some Malice'},
-  {id:37, video:3, start:'46:00', end:'01:09:37', file:'37_Tchaikovsky_PianoConcerto.m4a', composer:'Tchaikovsky',    title:'Piano Concerto No.1 Op.23 - 1. Allegro con spirito'},
-  {id:38, video:3, start:'01:09:40', end:'01:13:38', file:'38_Khachaturian_Masquerade.m4a', composer:'Khachaturian', title:'Ballet Suite from Masquerade. 1. Waltz'},
+  // 바로크
+  {id:1,  era:'baroque',   file:'01_Pachelbel_Canon.m4a',        composer:'Pachelbel',   title:'Canon in D major',                                        titleKo:'캐논'},
+  {id:2,  era:'baroque',   file:'02_Bach_Chaconne.m4a',          composer:'Bach',        title:'Chaconne from Partita No.2 in d minor, BWV 1004',          titleKo:'무반주 바이올린 파르티타 2번'},
+  {id:3,  era:'baroque',   file:'28_Bach_CelloSuite1.m4a',       composer:'Bach',        title:'Cello Suite No.1 BWV 1007, I. Prelude',                    titleKo:'첼로 모음곡 제1번 전주곡'},
+  {id:4,  era:'baroque',   file:'15_Vivaldi_Winter.m4a',         composer:'Vivaldi',     title:'Concerto No.4 in F minor, Op.8, RV 297, "Winter"',         titleKo:'사계 중 \'겨울\''},
+  {id:5,  era:'baroque',   file:'21_Couperin_Barricades.m4a',    composer:'Couperin',    title:'Les barricades mysterieuses',                              titleKo:'신비스러운 장벽'},
+  {id:6,  era:'baroque',   file:'32_Handel_Hallelujah.m4a',      composer:'Handel',      title:"'Hallelujah Chorus' from Handel's Messiah",                titleKo:'할렐루야 코러스'},
+  // 고전
+  {id:7,  era:'classical', file:'05_Haydn_Emperor.m4a',          composer:'Haydn',       title:"String Quartet No.62, Op.76 No.3 'Emperor': II. Poco adagio", titleKo:'현악 4중주 62번 \'황제\' 2악장'},
+  {id:8,  era:'classical', file:'29_Haydn_CelloConcerto.m4a',    composer:'Haydn',       title:'Cello Concerto No.1 in C Major Hob.VIIb:1, 1. Moderato',  titleKo:'첼로 협주곡 1번 1악장'},
+  {id:9,  era:'classical', file:'09_Mozart_Sym40.m4a',           composer:'Mozart',      title:'Symphony No.40 in g minor, K550, 1st Mov.',                titleKo:'교향곡 40번 g단조 1악장'},
+  {id:10, era:'classical', file:'16_Mozart_Lacrimosa.m4a',       composer:'Mozart',      title:'Requiem in d minor, K 626 - Lacrimosa',                    titleKo:'레퀴엠 d단조'},
+  {id:11, era:'classical', file:'33_Mozart_EineKleine.m4a',      composer:'Mozart',      title:'Serenade No.13 in G Major, K.525, Eine Kleine Nachtmusik', titleKo:'아이네 클라이네 나흐트무지크'},
+  {id:12, era:'classical', file:'06_Beethoven_Sym5.m4a',         composer:'Beethoven',   title:'Symphony No.5 in C minor, Op.67, 1st Mov.',                titleKo:'운명 교향곡'},
+  // 낭만
+  {id:13, era:'romantic',  file:'10_Schubert_PianoTrio.m4a',     composer:'Schubert',    title:'Piano Trio No.2 in E flat major, D.929 Op.100: II. Andante con moto', titleKo:'피아노 3중주 2번'},
+  {id:14, era:'romantic',  file:'34_Schubert_Erlkonig.m4a',      composer:'Schubert',    title:'Erlkonig D.328 Op.1, G minor',                             titleKo:'가곡 \'마왕\''},
+  {id:15, era:'romantic',  file:'11_Mendelssohn_Wedding.m4a',    composer:'Mendelssohn', title:'Wedding March From "A Midsummer Night\'s Dream" Op.61',     titleKo:'결혼 행진곡'},
+  {id:16, era:'romantic',  file:'17_Chopin_Ballade1.m4a',        composer:'Chopin',      title:'Ballade No.1 In G Minor, Op.23',                           titleKo:'발라드 1번'},
+  {id:17, era:'romantic',  file:'12_Paganini_Caprice24.m4a',     composer:'Paganini',    title:'Caprice No.24',                                            titleKo:'카프리스 24번'},
+  {id:18, era:'romantic',  file:'13_Schumann_Traumerei.m4a',     composer:'Schumann',    title:"Kinderszenen Op.15 No.7 'Traumerei'",                      titleKo:'어린이 정경 중 7번 \'트로이메라이\''},
+  {id:19, era:'romantic',  file:'18_Wagner_Valkyries.m4a',       composer:'Wagner',      title:'Ride of the Valkyries (Walkürenritt)',                      titleKo:'발퀴레의 기행'},
+  {id:20, era:'romantic',  file:'35_Liszt_LaCampanella.m4a',     composer:'Liszt',       title:'Etude No.3 "La Campanella"',                               titleKo:'에튀드 3번 \'라 캄파넬라\''},
+  {id:21, era:'romantic',  file:'19_Rachmaninoff_Sym2.m4a',      composer:'Rachmaninoff',title:'Symphony No.2 Op.27 III. Adagio',                          titleKo:'교향곡 2번 3악장'},
+  {id:22, era:'romantic',  file:'31_Mahler_Sym5.m4a',            composer:'Mahler',      title:'Symphony No.5, IV. Adagietto',                             titleKo:'교향곡 5번 4악장 \'아다지에토\''},
+  {id:23, era:'romantic',  file:'23_Bizet_Carmen.m4a',           composer:'Bizet',       title:"Opera 'Carmen' Habanera",                                  titleKo:'카르멘 중 하바네라'},
+  {id:24, era:'romantic',  file:'37_Tchaikovsky_PianoConcerto.m4a', composer:'Tchaikovsky', title:'Piano Concerto No.1 Op.23 - 1. Allegro con spirito',    titleKo:'피아노 협주곡 1번'},
+  {id:25, era:'romantic',  file:'30_Puccini_NessunDorma.m4a',    composer:'Puccini',     title:'Opera Turandot "Nessun Dorma"',                            titleKo:'투란도트 중 \'아무도 잠들지 말라\''},
+  // 20세기·현대
+  {id:26, era:'modern',    file:'03_Debussy_LaMer.m4a',          composer:'Debussy',     title:"Symphonic poem 'La mer' 2nd mov.",                         titleKo:'교향시 \'바다\' 2악장'},
+  {id:27, era:'modern',    file:'04_CarlOrff_OFortuna.m4a',      composer:'Carl Orff',   title:"Carmina Burana: 'O Fortuna'",                              titleKo:'오, 운명의 여신이여'},
+  {id:28, era:'modern',    file:'24_ErikSatie_Gymnopedie.m4a',   composer:'Erik Satie',  title:'Gymnopédies No.1',                                         titleKo:'짐 노페디 1번'},
+  {id:29, era:'modern',    file:'20_Bolcom_GracefulGhost.m4a',   composer:'W. Bolcom',   title:'Graceful Ghost Rag',                                       titleKo:'우아한 유령'},
+  {id:30, era:'modern',    file:'26_KarlJenkins_Palladio.m4a',   composer:'Karl Jenkins',title:'Palladio: 1. Allegretto',                                  titleKo:'팔라디오'},
+  {id:31, era:'modern',    file:'14_Kapustin_Pastoral.m4a',      composer:'Kapustin',    title:"Eight Concert Etudes Op.40 No.6 'Pastoral'",               titleKo:'8개의 에튀드 중 6번'},
+  {id:32, era:'modern',    file:'38_Khachaturian_Masquerade.m4a',composer:'Khachaturian',title:'Ballet Suite from Masquerade. 1. Waltz',                   titleKo:'가면무도회 중 왈츠'},
+  {id:33, era:'modern',    file:'22_Beethoven_Moonlight.m4a',    composer:'Beethoven',   title:"Piano Sonata No.14 'Moonlight': III. Presto agitato",       titleKo:'월광 소나타 3악장'},
 ];
 
 // ===== LIST =====
 let currentListPiece = null;
+const listAudio = document.getElementById('list-audio');
 
-function renderList(videoFilter) {
+function setIcon(el, type) {
+  el.querySelector('svg').innerHTML = ICON[type];
+}
+
+listAudio.addEventListener('ended', () => {
+  setIcon(document.getElementById('player-icon'), 'replay');
+  if (currentListPiece) {
+    const btn = document.getElementById('playbtn-' + currentListPiece.id);
+    if (btn) { setIcon(btn, 'replay'); btn.classList.remove('playing'); }
+  }
+});
+
+function renderList(eraFilter) {
   const container = document.getElementById('piece-list');
   container.innerHTML = '';
-  const filtered = videoFilter === 0 ? PIECES : PIECES.filter(p => p.video === videoFilter);
-  let lastVideo = null;
+  const filtered = eraFilter === 'all' ? PIECES : PIECES.filter(p => p.era === eraFilter);
+
+  let lastEra = null;
   filtered.forEach((p, i) => {
-    if (videoFilter === 0 && p.video !== lastVideo) {
-      lastVideo = p.video;
+    if (eraFilter === 'all' && p.era !== lastEra) {
+      lastEra = p.era;
       const hdr = document.createElement('div');
       hdr.className = 'section-header';
-      hdr.textContent = '영상 ' + ['Ⅰ','Ⅱ','Ⅲ'][p.video-1];
+      hdr.innerHTML = `<span>${ERAS[p.era].label}</span><span class="era-ko">${ERAS[p.era].ko}</span>`;
       container.appendChild(hdr);
     }
     const card = document.createElement('div');
     card.className = 'piece-card';
     card.id = 'card-' + p.id;
     card.innerHTML = `
-      <button class="play-btn" id="playbtn-${p.id}" onclick="toggleListPiece(${p.id}, this)">▶</button>
+      <button class="play-btn" id="playbtn-${p.id}" onclick="toggleListPiece(${p.id}, this)">
+        <svg viewBox="0 0 24 24">${ICON.play}</svg>
+      </button>
       <div class="piece-info">
         <div class="piece-composer">${p.composer}</div>
         <div class="piece-title">${p.title}</div>
-        <div class="piece-time">⏱ ${p.start} – ${p.end}</div>
+        <div class="piece-title-ko">${p.titleKo}</div>
       </div>
-      <div class="piece-video-tag">V${p.video}</div>
     `;
     container.appendChild(card);
   });
 }
 
-function filterList(v, btn) {
+function filterList(era, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  renderList(v);
+  renderList(era);
 }
-
-const listAudio = document.getElementById('list-audio');
-
-listAudio.addEventListener('ended', () => {
-  document.getElementById('player-play-btn').textContent = '↺';
-  if (currentListPiece) {
-    const btn = document.getElementById('playbtn-' + currentListPiece.id);
-    if (btn) { btn.textContent = '↺'; btn.classList.remove('playing'); }
-  }
-});
 
 function toggleListPiece(id, btn) {
   const piece = PIECES.find(p => p.id === id);
   if (currentListPiece && currentListPiece.id === id) {
-    // 같은 곡
     if (listAudio.paused) {
-      if (listAudio.ended) {
-        listAudio.currentTime = 0;
-      }
+      if (listAudio.ended) listAudio.currentTime = 0;
       listAudio.play();
-      btn.textContent = '⏸'; btn.classList.add('playing');
-      document.getElementById('player-play-btn').textContent = '⏸';
+      setIcon(btn, 'pause'); btn.classList.add('playing');
+      setIcon(document.getElementById('player-icon'), 'pause');
     } else {
       listAudio.pause();
-      btn.textContent = '▶'; btn.classList.remove('playing');
-      document.getElementById('player-play-btn').textContent = '▶';
+      setIcon(btn, 'play'); btn.classList.remove('playing');
+      setIcon(document.getElementById('player-icon'), 'play');
     }
   } else {
-    // 다른 곡 — 모든 버튼 초기화
-    document.querySelectorAll('.play-btn').forEach(b => { b.textContent = '▶'; b.classList.remove('playing'); });
+    document.querySelectorAll('.play-btn').forEach(b => { setIcon(b, 'play'); b.classList.remove('playing'); });
     currentListPiece = piece;
     listAudio.src = BASE + piece.file;
     listAudio.load();
     listAudio.play();
-    btn.textContent = '⏸'; btn.classList.add('playing');
+    setIcon(btn, 'pause'); btn.classList.add('playing');
     document.getElementById('player-composer').textContent = piece.composer;
     document.getElementById('player-title').textContent = piece.title;
-    document.getElementById('player-play-btn').textContent = '⏸';
+    setIcon(document.getElementById('player-icon'), 'pause');
     document.getElementById('player-container').classList.add('visible');
   }
 }
@@ -407,48 +418,41 @@ function toggleListAudio() {
   if (listAudio.paused) {
     if (listAudio.ended) listAudio.currentTime = 0;
     listAudio.play();
-    document.getElementById('player-play-btn').textContent = '⏸';
+    setIcon(document.getElementById('player-icon'), 'pause');
     const btn = document.getElementById('playbtn-' + currentListPiece.id);
-    if (btn) { btn.textContent = '⏸'; btn.classList.add('playing'); }
+    if (btn) { setIcon(btn, 'pause'); btn.classList.add('playing'); }
   } else {
     listAudio.pause();
-    document.getElementById('player-play-btn').textContent = '▶';
+    setIcon(document.getElementById('player-icon'), 'play');
     const btn = document.getElementById('playbtn-' + currentListPiece.id);
-    if (btn) { btn.textContent = '▶'; btn.classList.remove('playing'); }
+    if (btn) { setIcon(btn, 'play'); btn.classList.remove('playing'); }
   }
 }
 
 function closePlayer() {
-  listAudio.pause();
-  listAudio.src = '';
+  listAudio.pause(); listAudio.src = '';
   currentListPiece = null;
-  document.querySelectorAll('.play-btn').forEach(b => { b.textContent = '▶'; b.classList.remove('playing'); });
+  document.querySelectorAll('.play-btn').forEach(b => { setIcon(b, 'play'); b.classList.remove('playing'); });
   document.getElementById('player-container').classList.remove('visible');
 }
 
 // ===== QUIZ =====
 let quizQueue=[], currentQ=0, score=0, quizResults=[], answered=false;
-let currentComposers=[], currentTitles=[];
-let selectedComposerIdx = null, selectedTitleIdx = null;
-
+let currentComposers=[], currentTitles=[], selectedComposerIdx=null, selectedTitleIdx=null;
 const quizAudio = document.getElementById('quiz-audio');
 
 quizAudio.addEventListener('ended', () => {
-  const btn = document.getElementById('quiz-play-btn');
-  btn.textContent = '↺';
-  btn.classList.add('ended');
+  setIcon(document.getElementById('quiz-icon'), 'replay');
 });
 
 function toggleQuizAudio() {
-  const btn = document.getElementById('quiz-play-btn');
   if (quizAudio.paused) {
     if (quizAudio.ended) quizAudio.currentTime = 0;
     quizAudio.play();
-    btn.textContent = '⏸';
-    btn.classList.remove('ended');
+    setIcon(document.getElementById('quiz-icon'), 'pause');
   } else {
     quizAudio.pause();
-    btn.textContent = '▶';
+    setIcon(document.getElementById('quiz-icon'), 'play');
   }
 }
 
@@ -459,24 +463,28 @@ function shuffle(arr) {
 }
 
 function getEnabledPieces() {
-  const v1=document.getElementById('v1').checked;
-  const v2=document.getElementById('v2').checked;
-  const v3=document.getElementById('v3').checked;
-  return PIECES.filter(p=>(p.video===1&&v1)||(p.video===2&&v2)||(p.video===3&&v3));
+  const eras = [];
+  if(document.getElementById('e-baroque').checked) eras.push('baroque');
+  if(document.getElementById('e-classical').checked) eras.push('classical');
+  if(document.getElementById('e-romantic').checked) eras.push('romantic');
+  if(document.getElementById('e-modern').checked) eras.push('modern');
+  return PIECES.filter(p => eras.includes(p.era));
 }
 
 function startQuiz() {
   const pool = getEnabledPieces();
-  if(pool.length < 4){ alert('최소 4곡 이상 포함된 영상을 선택해주세요.'); return; }
+  if(pool.length < 4){ alert('최소 4곡 이상 포함된 시대를 선택해주세요.'); return; }
   const count = Math.min(parseInt(document.getElementById('quiz-count').value), pool.length);
   const choiceN = parseInt(document.getElementById('choice-count').value);
 
   quizQueue = shuffle(pool).slice(0, count).map(piece => {
     const others = shuffle(PIECES.filter(p => p.id !== piece.id));
     const wrongPieces = others.slice(0, choiceN - 1);
-    const composerOptions = shuffle([piece.composer, ...wrongPieces.map(w => w.composer)]);
-    const titleOptions = shuffle([piece.title, ...wrongPieces.map(w => w.title)]);
-    return { piece, composerOptions, titleOptions };
+    return {
+      piece,
+      composerOptions: shuffle([piece.composer, ...wrongPieces.map(w => w.composer)]),
+      titleOptions: shuffle([piece.title, ...wrongPieces.map(w => w.title)])
+    };
   });
 
   currentQ=0; score=0; quizResults=[];
@@ -488,9 +496,7 @@ function startQuiz() {
 
 function renderQuestion() {
   if(currentQ >= quizQueue.length){ showResults(); return; }
-  answered = false;
-  selectedComposerIdx = null;
-  selectedTitleIdx = null;
+  answered = false; selectedComposerIdx = null; selectedTitleIdx = null;
 
   const q = quizQueue[currentQ];
   const total = quizQueue.length;
@@ -499,37 +505,28 @@ function renderQuestion() {
   document.getElementById('q-score-live').textContent = `정답: ${score}`;
   document.getElementById('progress-fill').style.width = `${(currentQ/total)*100}%`;
 
-  // 오디오 로드 후 자동재생
   quizAudio.src = BASE + q.piece.file;
   quizAudio.load();
-  const btn = document.getElementById('quiz-play-btn');
-  btn.textContent = '⏸';
-  btn.classList.remove('ended');
-  quizAudio.play().catch(() => {
-    btn.textContent = '▶';
-  });
+  setIcon(document.getElementById('quiz-icon'), 'pause');
+  quizAudio.play().catch(() => setIcon(document.getElementById('quiz-icon'), 'play'));
 
-  // 작곡가 보기
   currentComposers = q.composerOptions;
   const cList = document.getElementById('composer-list');
   cList.innerHTML = '';
   currentComposers.forEach((c, i) => {
     const div = document.createElement('div');
     div.className = 'exam-item';
-    div.dataset.idx = i;
     div.innerHTML = `<span class="exam-key">${ALPHA[i]}</span><span>${c}</span>`;
     div.onclick = () => selectComposer(i);
     cList.appendChild(div);
   });
 
-  // 제목 보기
   currentTitles = q.titleOptions;
   const tList = document.getElementById('title-list');
   tList.innerHTML = '';
   currentTitles.forEach((t, i) => {
     const div = document.createElement('div');
     div.className = 'exam-item';
-    div.dataset.idx = i;
     div.innerHTML = `<span class="exam-key">${i+1}</span><span>${t}</span>`;
     div.onclick = () => selectTitle(i);
     tList.appendChild(div);
@@ -541,20 +538,16 @@ function renderQuestion() {
 }
 
 function selectComposer(idx) {
-  if (answered) return;
+  if(answered) return;
   selectedComposerIdx = idx;
-  document.querySelectorAll('#composer-list .exam-item').forEach((el, i) => {
-    el.classList.toggle('selected', i === idx);
-  });
+  document.querySelectorAll('#composer-list .exam-item').forEach((el,i) => el.classList.toggle('selected', i===idx));
   checkSubmitReady();
 }
 
 function selectTitle(idx) {
-  if (answered) return;
+  if(answered) return;
   selectedTitleIdx = idx;
-  document.querySelectorAll('#title-list .exam-item').forEach((el, i) => {
-    el.classList.toggle('selected', i === idx);
-  });
+  document.querySelectorAll('#title-list .exam-item').forEach((el,i) => el.classList.toggle('selected', i===idx));
   checkSubmitReady();
 }
 
@@ -563,7 +556,7 @@ function checkSubmitReady() {
 }
 
 function submitAnswer() {
-  if(answered || selectedComposerIdx === null || selectedTitleIdx === null) return;
+  if(answered || selectedComposerIdx===null || selectedTitleIdx===null) return;
   answered = true;
   quizAudio.pause();
 
@@ -575,22 +568,18 @@ function submitAnswer() {
   const bothOk = composerOk && titleOk;
   if(bothOk) score++;
 
-  // 작곡가 정답 표시
-  document.querySelectorAll('#composer-list .exam-item').forEach((el, i) => {
+  document.querySelectorAll('#composer-list .exam-item').forEach((el,i) => {
     el.classList.add('disabled');
-    if (currentComposers[i] === q.piece.composer) el.classList.add('correct');
-    else if (i === selectedComposerIdx && !composerOk) el.classList.add('wrong');
+    if(currentComposers[i]===q.piece.composer) el.classList.add('correct');
+    else if(i===selectedComposerIdx && !composerOk) el.classList.add('wrong');
   });
-
-  // 제목 정답 표시
-  document.querySelectorAll('#title-list .exam-item').forEach((el, i) => {
+  document.querySelectorAll('#title-list .exam-item').forEach((el,i) => {
     el.classList.add('disabled');
-    if (currentTitles[i] === q.piece.title) el.classList.add('correct');
-    else if (i === selectedTitleIdx && !titleOk) el.classList.add('wrong');
+    if(currentTitles[i]===q.piece.title) el.classList.add('correct');
+    else if(i===selectedTitleIdx && !titleOk) el.classList.add('wrong');
   });
 
   document.getElementById('submit-btn').disabled = true;
-
   const fb = document.getElementById('quiz-feedback');
   if(bothOk) {
     fb.className = 'quiz-feedback correct-fb show';
@@ -602,8 +591,7 @@ function submitAnswer() {
     if(!titleOk) msg += `제목 정답: ${currentTitles.indexOf(q.piece.title)+1} (${q.piece.title.substring(0,40)}${q.piece.title.length>40?'…':''})`;
     fb.textContent = msg;
   }
-
-  quizResults.push({ q, chosenComposer, chosenTitle, composerOk, titleOk, bothOk });
+  quizResults.push({q, chosenComposer, chosenTitle, composerOk, titleOk, bothOk});
   document.getElementById('q-score-live').textContent = `정답: ${score}`;
   document.getElementById('next-btn').classList.add('show');
 }
@@ -618,13 +606,10 @@ function showResults() {
   document.getElementById('final-label').textContent = `/ ${total} 정답`;
   const pct = score/total;
   document.getElementById('final-comment').textContent =
-    pct===1 ? '완벽합니다! 🎼 만점이에요!' :
-    pct>=0.8 ? '훌륭해요! 시험 잘 볼 것 같은데요?' :
-    pct>=0.6 ? '조금만 더 복습하면 될 것 같아요!' :
-    '곡 목록 탭에서 다시 한 번 들어보세요 💪';
+    pct===1?'완벽합니다! 🎼 만점이에요!':pct>=0.8?'훌륭해요! 시험 잘 볼 것 같은데요?':pct>=0.6?'조금만 더 복습하면 될 것 같아요!':'곡 목록 탭에서 다시 한 번 들어보세요 💪';
 
   const bd = document.getElementById('results-breakdown');
-  bd.innerHTML = '<div class="section-header" style="margin-top:0">문제별 결과</div>';
+  bd.innerHTML = '<div class="section-header" style="margin-top:0;font-size:11px">문제별 결과</div>';
   quizResults.forEach((r,i) => {
     const div = document.createElement('div');
     div.className = 'result-item';
@@ -651,12 +636,10 @@ function switchTab(name, btn) {
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   btn.classList.add('active');
-  // 탭 전환시 오디오 정지
-  listAudio.pause();
-  quizAudio.pause();
+  listAudio.pause(); quizAudio.pause();
 }
 
-renderList(0);
+renderList('all');
 </script>
 </body>
 </html>
