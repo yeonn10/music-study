@@ -44,7 +44,7 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
 /* 재생 버튼 */
 .play-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--gold);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;color:var(--gold);}
 .play-btn:hover{background:var(--gold);color:var(--bg);}
-.play-btn.playing{border-color:var(--green);color:var(--green);}
+.play-btn.playing{animation:pulse 1.5s ease-in-out infinite;}
 .play-btn svg{width:16px;height:16px;fill:currentColor;}
 
 /* PLAYER */
@@ -86,9 +86,9 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
 .quiz-question-text{font-family:'Playfair Display',serif;font-size:17px;color:var(--cream);line-height:1.5;}
 #quiz-play-btn{width:56px;height:56px;border-radius:50%;flex-shrink:0;border:2px solid var(--gold);background:none;color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 #quiz-play-btn:hover{background:var(--gold);color:var(--bg);}
-#quiz-play-btn.playing{border-color:var(--green);color:var(--green);animation:pulse 1.5s ease-in-out infinite;}
+#quiz-play-btn.playing{animation:pulse 1.5s ease-in-out infinite;}
 #quiz-play-btn svg{width:24px;height:24px;fill:currentColor;}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(74,158,106,0.4);}50%{box-shadow:0 0 0 8px rgba(74,158,106,0);}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.5);}50%{box-shadow:0 0 0 10px rgba(201,168,76,0);}}
 
 /* 보기 */
 .exam-columns{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
@@ -107,6 +107,12 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
 .submit-btn:disabled{background:var(--border);color:var(--muted);cursor:default;}
 .quiz-feedback{padding:14px 16px;border:1px solid var(--border);margin-top:12px;margin-bottom:14px;display:none;font-size:13px;line-height:1.6;}
 .quiz-feedback.correct-fb{border-color:var(--green);color:var(--green);}
+.fb-title{font-size:14px;font-weight:700;margin-bottom:10px;}
+.fb-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.fb-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);min-width:44px;margin-top:2px;}
+.fb-ok{font-size:13px;color:var(--green);font-weight:600;}
+.fb-ng{font-size:13px;color:var(--red);font-weight:600;white-space:nowrap;}
+.fb-detail{font-size:12px;color:var(--cream);opacity:0.8;line-height:1.5;}
 .quiz-feedback.wrong-fb{border-color:var(--red);color:var(--red);}
 .quiz-feedback.show{display:block;}
 .next-btn{background:none;border:1px solid var(--gold);color:var(--gold);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;padding:11px 28px;cursor:pointer;text-transform:uppercase;display:none;transition:all .2s;margin-top:4px;}
@@ -525,13 +531,22 @@ function submitAnswer(){
 
   document.getElementById('submit-btn').disabled=true;
   const fb=document.getElementById('quiz-feedback');
-  if(ok){fb.className='quiz-feedback correct-fb show';fb.textContent='✓ 정답! 작곡가와 제목 모두 맞혔어요!';}
-  else{
+  const cCorrectIdx=currentComposers.indexOf(q.piece.composer);
+  const tCorrectIdx=currentTitles.indexOf(q.piece.title);
+  if(ok){
+    fb.className='quiz-feedback correct-fb show';
+    fb.innerHTML='<strong>✓ 정답!</strong> 작곡가와 제목 모두 맞혔어요!';
+  } else {
     fb.className='quiz-feedback wrong-fb show';
-    let msg='✗ 오답.  ';
-    if(!cOk)msg+=`작곡가 정답: ${ALPHA[currentComposers.indexOf(q.piece.composer)]} (${q.piece.composer})  `;
-    if(!tOk)msg+=`제목 정답: ${currentTitles.indexOf(q.piece.title)+1} (${q.piece.title.substring(0,40)}${q.piece.title.length>40?'…':''})`;
-    fb.textContent=msg;
+    const cRow=cOk
+      ? `<div class="fb-row"><span class="fb-label">작곡가</span><span class="fb-ok">✓ 정답</span></div>`
+      : `<div class="fb-row"><span class="fb-label">작곡가</span><span class="fb-ng">✗ 오답</span><span class="fb-detail">정답: ${ALPHA[cCorrectIdx]} (${q.piece.composer})</span></div>`;
+    const tCorrectShort=q.piece.title.length>35?q.piece.title.substring(0,35)+'…':q.piece.title;
+    const tChosenShort=currentTitles[selT].length>35?currentTitles[selT].substring(0,35)+'…':currentTitles[selT];
+    const tRow=tOk
+      ? `<div class="fb-row"><span class="fb-label">제목</span><span class="fb-ok">✓ 정답</span></div>`
+      : `<div class="fb-row"><span class="fb-label">제목</span><span class="fb-ng">✗ 오답</span><span class="fb-detail">정답: ${tCorrectShort}</span></div>`;
+    fb.innerHTML=`<div class="fb-title">✗ 오답</div>${cRow}${tRow}`;
   }
   quizResults.push({q,cOk,tOk,ok,cChosen:currentComposers[selC],tChosen:currentTitles[selT]});
   document.getElementById('q-score-live').textContent=`정답: ${score}`;
