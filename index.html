@@ -99,18 +99,17 @@
   .progress-fill { height: 100%; background: var(--gold); transition: width .3s; }
   .quiz-type-badge { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 2px; padding: 3px 8px; border: 1px solid var(--gold); color: var(--gold); display: inline-block; margin-bottom: 12px; text-transform: uppercase; }
   .quiz-question-box { background: var(--surface); border: 1px solid var(--border); padding: 20px; margin-bottom: 16px; }
-  .quiz-question-text { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--cream); line-height: 1.4; margin-bottom: 20px; }
+  .quiz-question-text { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--cream); line-height: 1.4; }
+  .quiz-question-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 
-  /* 퀴즈 오디오 플레이어 */
-  .quiz-audio-player { display: flex; align-items: center; justify-content: center; padding: 8px 0; }
   #quiz-play-btn {
-    width: 64px; height: 64px; border-radius: 50%;
+    width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
     border: 2px solid var(--gold); background: none; color: var(--gold);
     cursor: pointer; display: flex; align-items: center; justify-content: center;
     transition: all .2s;
   }
   #quiz-play-btn:hover { background: var(--gold); color: var(--bg); }
-  #quiz-play-btn svg { width: 28px; height: 28px; fill: currentColor; }
+  #quiz-play-btn svg { width: 24px; height: 24px; fill: currentColor; }
 
   /* 보기 */
   .exam-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
@@ -227,8 +226,8 @@
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
       <div class="quiz-type-badge">작곡가 · 제목 매칭</div>
       <div class="quiz-question-box">
-        <div class="quiz-question-text">다음 음악을 듣고 작곡가와 제목을 고르세요.</div>
-        <div class="quiz-audio-player">
+        <div class="quiz-question-row">
+          <div class="quiz-question-text">다음 음악을 듣고<br>작곡가와 제목을 고르세요.</div>
           <button id="quiz-play-btn" onclick="toggleQuizAudio()">
             <svg id="quiz-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
           </button>
