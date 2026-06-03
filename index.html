@@ -415,7 +415,7 @@ function renderQuestion() {
   document.getElementById('q-counter').textContent = `${currentQ+1} / ${total}`;
   document.getElementById('q-score-live').textContent = `정답: ${score}`;
   document.getElementById('progress-fill').style.width = `${(currentQ/total)*100}%`;
-  document.getElementById('q-time-info').textContent = `구간: ${q.piece.start} – ${q.piece.end}`;
+  document.getElementById('q-time-info').textContent = '';
 
   // 오디오 세팅
   const { src, time } = getAudioSrc(q.piece.video, q.piece.startSec);
