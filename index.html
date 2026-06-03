@@ -30,7 +30,7 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
 .list-filters{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
 .filter-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;padding:6px 12px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
 .filter-btn.active,.filter-btn:hover{border-color:var(--gold);color:var(--gold);}
-.piece-card{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--border);background:var(--surface);margin-bottom:6px;transition:all .2s;position:relative;overflow:hidden;}
+.piece-card{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--border);background:var(--surface);margin-bottom:6px;transition:all .2s;position:relative;overflow:hidden;flex-wrap:wrap;}
 .piece-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);transform:scaleY(0);transition:transform .2s;}
 .piece-card:hover{background:var(--surface2);border-color:var(--gold);}
 .piece-card:hover::before{transform:scaleY(1);}
@@ -58,6 +58,15 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
 #player-play-btn svg{width:20px;height:20px;fill:currentColor;}
 .close-player{background:none;border:1px solid var(--border);color:var(--muted);width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;}
 .close-player:hover{border-color:var(--red);color:var(--red);}
+
+/* DESCRIPTION */
+.piece-desc-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;padding:4px 8px;cursor:pointer;text-transform:uppercase;white-space:nowrap;transition:all .2s;flex-shrink:0;}
+.piece-desc-btn:hover{border-color:var(--gold);color:var(--gold);}
+.piece-desc{display:none;padding:12px 16px 14px 52px;border-top:1px solid var(--border);background:var(--surface2);width:100%;margin:0 -16px;padding-left:68px;}
+.piece-desc.open{display:block;}
+.piece-desc ul{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.piece-desc ul li{font-size:12px;color:var(--cream);line-height:1.6;padding-left:16px;position:relative;opacity:0.9;}
+.piece-desc ul li::before{content:'—';position:absolute;left:0;color:var(--gold);}
 
 /* QUIZ SETTINGS */
 .quiz-settings{background:var(--surface);border:1px solid var(--border);padding:20px;margin-bottom:20px;}
@@ -164,7 +173,7 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
       <div class="quiz-settings">
         <h3>퀴즈 설정</h3>
         <div class="settings-row">
-          <div class="setting-group">
+          <div class="setting-group" id="quiz-count-group">
             <label>문제 수</label>
             <select id="quiz-count">
               <option value="5">5문제</option>
@@ -182,6 +191,14 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
               <option value="10">10개</option>
             </select>
           </div>
+        </div>
+        <div class="setting-group" style="margin-bottom:14px">
+          <label>문제 유형</label>
+          <select id="quiz-mode" onchange="toggleCountVisibility()">
+            <option value="match">작곡가·제목 매칭</option>
+            <option value="desc">작품 설명 (Q1·Q2)</option>
+            <option value="real" selected>실전 (매칭7~8 + 설명2~3)</option>
+          </select>
         </div>
         <div class="setting-group" style="margin-bottom:14px">
           <label>포함할 시대</label>
@@ -202,7 +219,7 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
         <span id="q-score-live">정답: 0</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-      <div class="quiz-type-badge">작곡가 · 제목 매칭</div>
+      <div class="quiz-type-badge" id="quiz-type-badge">작곡가 · 제목 매칭</div>
       <div class="quiz-question-box">
         <div class="quiz-question-row">
           <div class="quiz-question-text">다음 음악을 듣고<br>작곡가와 제목을 고르세요.</div>
@@ -211,7 +228,23 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
           </button>
         </div>
       </div>
-      <div class="exam-columns">
+
+      <!-- 설명 문제 영역 -->
+      <div id="desc-question-area" style="display:none;">
+        <div class="quiz-question-box" style="margin-bottom:16px;">
+          <div class="quiz-question-row">
+            <div class="quiz-question-text" id="desc-q-text">다음 감상 곡에 대한 설명으로 올바른 것은?</div>
+            <button id="desc-play-btn" onclick="toggleQuizAudio()" style="width:56px;height:56px;border-radius:50%;flex-shrink:0;border:2px solid var(--gold);background:none;color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;">
+              <svg id="desc-play-icon" viewBox="0 0 24 24" style="width:24px;height:24px;fill:currentColor;"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="exam-list" id="desc-options-list" style="margin-bottom:16px;"></div>
+        <button class="submit-btn" id="desc-submit-btn" onclick="submitDescAnswer()" disabled>제출하기</button>
+        <div class="quiz-feedback" id="desc-quiz-feedback"></div>
+      </div>
+
+      <div id="exam-columns-area"><div class="exam-columns">
         <div>
           <div class="exam-col-title">작곡가</div>
           <div class="exam-list" id="composer-list"></div>
@@ -221,6 +254,7 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
           <div class="exam-list" id="title-list"></div>
         </div>
       </div>
+      </div><!-- end exam-columns-area -->
       <button class="submit-btn" id="submit-btn" onclick="submitAnswer()" disabled>제출하기</button>
       <div class="quiz-feedback" id="quiz-feedback"></div>
       <button class="next-btn" id="next-btn" onclick="nextQuestion()">다음 문제 →</button>
@@ -266,40 +300,41 @@ const PIECES=[
   {id:1, era:'baroque',   file:'01_Pachelbel_Canon.m4a',           composer:'Pachelbel',    title:'Canon in D major',                                           titleKo:'캐논'},
   {id:2, era:'baroque',   file:'02_Bach_Chaconne.m4a',             composer:'Bach',         title:'Chaconne from Partita No.2 in d minor, BWV 1004',             titleKo:'무반주 바이올린 파르티타 2번'},
   {id:3, era:'baroque',   file:'28_Bach_CelloSuite1.m4a',          composer:'Bach',         title:'Cello Suite No.1 BWV 1007, I. Prelude',                       titleKo:'첼로 모음곡 제1번 전주곡'},
-  {id:4, era:'baroque',   file:'15_Vivaldi_Winter.m4a',            composer:'Vivaldi',      title:'Concerto No.4 in F minor, Op.8, RV 297, "Winter"',            titleKo:'사계 중 \'겨울\''},
+  {id:4, era:'baroque',   file:'15_Vivaldi_Winter.m4a',            composer:'Vivaldi',      title:'Concerto No.4 in F minor, Op.8, RV 297, "Winter"',            titleKo:"사계 중 '겨울'"},
   {id:5, era:'baroque',   file:'21_Couperin_Barricades.m4a',       composer:'Couperin',     title:'Les barricades mysterieuses',                                 titleKo:'신비스러운 장벽'},
   {id:6, era:'baroque',   file:'32_Handel_Hallelujah.m4a',         composer:'Handel',       title:"'Hallelujah Chorus' from Handel's Messiah",                   titleKo:'할렐루야 코러스'},
-  {id:7, era:'classical', file:'05_Haydn_Emperor.m4a',             composer:'Haydn',        title:"String Quartet No.62, Op.76 No.3 'Emperor': II. Poco adagio", titleKo:'현악 4중주 62번 \'황제\' 2악장'},
+  {id:7, era:'classical', file:'05_Haydn_Emperor.m4a',             composer:'Haydn',        title:"String Quartet No.62, Op.76 No.3 'Emperor': II. Poco adagio", titleKo:"현악 4중주 62번 '황제' 2악장"},
   {id:8, era:'classical', file:'29_Haydn_CelloConcerto.m4a',       composer:'Haydn',        title:'Cello Concerto No.1 in C Major Hob.VIIb:1, 1. Moderato',     titleKo:'첼로 협주곡 1번 1악장'},
   {id:9, era:'classical', file:'09_Mozart_Sym40.m4a',              composer:'Mozart',       title:'Symphony No.40 in g minor, K550, 1st Mov.',                  titleKo:'교향곡 40번 g단조 1악장'},
   {id:10,era:'classical', file:'16_Mozart_Lacrimosa.m4a',          composer:'Mozart',       title:'Requiem in d minor, K 626 - Lacrimosa',                       titleKo:'레퀴엠 d단조'},
   {id:11,era:'classical', file:'33_Mozart_EineKleine.m4a',         composer:'Mozart',       title:'Serenade No.13 in G Major, K.525, Eine Kleine Nachtmusik',    titleKo:'아이네 클라이네 나흐트무지크'},
   {id:12,era:'classical', file:'06_Beethoven_Sym5.m4a',            composer:'Beethoven',    title:'Symphony No.5 in C minor, Op.67, 1st Mov.',                  titleKo:'운명 교향곡'},
   {id:13,era:'classical', file:'22_Beethoven_Moonlight.m4a',       composer:'Beethoven',    title:"Piano Sonata No.14 'Moonlight': III. Presto agitato",          titleKo:'월광 소나타 3악장'},
-  {id:33,era:'romantic',  file:'10_Schubert_PianoTrio.m4a',        composer:'Schubert',     title:'Piano Trio No.2 in E flat major, D.929 Op.100: II. Andante con moto', titleKo:'피아노 3중주 2번'},
-  {id:33,era:'romantic',  file:'34_Schubert_Erlkonig.m4a',         composer:'Schubert',     title:'Erlkonig D.328 Op.1, G minor',                                titleKo:'가곡 \'마왕\''},
-  {id:33,era:'romantic',  file:'11_Mendelssohn_Wedding.m4a',       composer:'Mendelssohn',  title:'Wedding March From "A Midsummer Night\'s Dream" Op.61',        titleKo:'결혼 행진곡'},
-  {id:33,era:'romantic',  file:'17_Chopin_Ballade1.m4a',           composer:'Chopin',       title:'Ballade No.1 In G Minor, Op.23',                              titleKo:'발라드 1번'},
-  {id:33,era:'romantic',  file:'12_Paganini_Caprice24.m4a',        composer:'Paganini',     title:'Caprice No.24',                                               titleKo:'카프리스 24번'},
-  {id:33,era:'romantic',  file:'13_Schumann_Traumerei.m4a',        composer:'Schumann',     title:"Kinderszenen Op.15 No.7 'Traumerei'",                         titleKo:'어린이 정경 중 7번 \'트로이메라이\''},
-  {id:33,era:'romantic',  file:'18_Wagner_Valkyries.m4a',          composer:'Wagner',       title:'Ride of the Valkyries (Walkürenritt)',                         titleKo:'발퀴레의 기행'},
-  {id:33,era:'romantic',  file:'35_Liszt_LaCampanella.m4a',        composer:'Liszt',        title:'Etude No.3 "La Campanella"',                                  titleKo:'에튀드 3번 \'라 캄파넬라\''},
-  {id:33,era:'romantic',  file:'19_Rachmaninoff_Sym2.m4a',         composer:'Rachmaninoff', title:'Symphony No.2 Op.27 III. Adagio',                             titleKo:'교향곡 2번 3악장'},
-  {id:33,era:'romantic',  file:'31_Mahler_Sym5.m4a',               composer:'Mahler',       title:'Symphony No.5, IV. Adagietto',                                titleKo:'교향곡 5번 4악장 \'아다지에토\''},
-  {id:33,era:'romantic',  file:'23_Bizet_Carmen.m4a',              composer:'Bizet',        title:"Opera 'Carmen' Habanera",                                     titleKo:'카르멘 중 하바네라'},
-  {id:33,era:'romantic',  file:'37_Tchaikovsky_PianoConcerto.m4a', composer:'Tchaikovsky',  title:'Piano Concerto No.1 Op.23 - 1. Allegro con spirito',          titleKo:'피아노 협주곡 1번'},
-  {id:33,era:'romantic',  file:'30_Puccini_NessunDorma.m4a',       composer:'Puccini',      title:'Opera Turandot "Nessun Dorma"',                               titleKo:'투란도트 중 \'아무도 잠들지 말라\''},
-  {id:34,era:'modern',    file:'03_Debussy_LaMer.m4a',             composer:'Debussy',      title:"Symphonic poem 'La mer' 2nd mov.",                            titleKo:'교향시 \'바다\' 2악장'},
-  {id:34,era:'modern',    file:'04_CarlOrff_OFortuna.m4a',         composer:'Carl Orff',    title:"Carmina Burana: 'O Fortuna'",                                 titleKo:'오, 운명의 여신이여'},
-  {id:34,era:'modern',    file:'24_ErikSatie_Gymnopedie.m4a',      composer:'Erik Satie',   title:'Gymnopédies No.1',                                            titleKo:'짐 노페디 1번'},
-  {id:34,era:'modern',    file:'20_Bolcom_GracefulGhost.m4a',      composer:'W. Bolcom',    title:'Graceful Ghost Rag',                                          titleKo:'우아한 유령'},
-  {id:34,era:'modern',    file:'26_KarlJenkins_Palladio.m4a',      composer:'Karl Jenkins', title:'Palladio: 1. Allegretto',                                     titleKo:'팔라디오'},
-  {id:34,era:'modern',    file:'14_Kapustin_Pastoral.m4a',         composer:'Kapustin',     title:"Eight Concert Etudes Op.40 No.6 'Pastoral'",                  titleKo:'8개의 에튀드 중 6번'},
-  {id:34,era:'modern',    file:'38_Khachaturian_Masquerade.m4a',   composer:'Khachaturian', title:'Ballet Suite from Masquerade. 1. Waltz',                      titleKo:'가면무도회 중 왈츠'},
-
+  {id:14,era:'romantic',  file:'10_Schubert_PianoTrio.m4a',        composer:'Schubert',     title:'Piano Trio No.2 in E flat major, D.929 Op.100: II. Andante con moto', titleKo:'피아노 3중주 2번'},
+  {id:15,era:'romantic',  file:'34_Schubert_Erlkonig.m4a',         composer:'Schubert',     title:'Erlkonig D.328 Op.1, G minor',                                titleKo:"가곡 '마왕'"},
+  {id:16,era:'romantic',  file:'11_Mendelssohn_Wedding.m4a',       composer:'Mendelssohn',  title:'Wedding March From "A Midsummer Night's Dream" Op.61',        titleKo:'결혼 행진곡'},
+  {id:17,era:'romantic',  file:'17_Chopin_Ballade1.m4a',           composer:'Chopin',       title:'Ballade No.1 In G Minor, Op.23',                              titleKo:'발라드 1번'},
+  {id:18,era:'romantic',  file:'12_Paganini_Caprice24.m4a',        composer:'Paganini',     title:'Caprice No.24',                                               titleKo:'카프리스 24번'},
+  {id:19,era:'romantic',  file:'13_Schumann_Traumerei.m4a',        composer:'Schumann',     title:"Kinderszenen Op.15 No.7 'Traumerei'",                         titleKo:"어린이 정경 중 7번 '트로이메라이'"},
+  {id:20,era:'romantic',  file:'18_Wagner_Valkyries.m4a',          composer:'Wagner',       title:'Ride of the Valkyries (Walkürenritt)',                         titleKo:'발퀴레의 기행'},
+  {id:21,era:'romantic',  file:'35_Liszt_LaCampanella.m4a',        composer:'Liszt',        title:'Etude No.3 "La Campanella"',                                  titleKo:"에튀드 3번 '라 캄파넬라'"},
+  {id:22,era:'romantic',  file:'19_Rachmaninoff_Sym2.m4a',         composer:'Rachmaninoff', title:'Symphony No.2 Op.27 III. Adagio',                             titleKo:'교향곡 2번 3악장'},
+  {id:23,era:'romantic',  file:'31_Mahler_Sym5.m4a',               composer:'Mahler',       title:'Symphony No.5, IV. Adagietto',                                titleKo:"교향곡 5번 4악장 '아다지에토'"},
+  {id:24,era:'romantic',  file:'23_Bizet_Carmen.m4a',              composer:'Bizet',        title:"Opera 'Carmen' Habanera",                                     titleKo:'카르멘 중 하바네라'},
+  {id:25,era:'romantic',  file:'37_Tchaikovsky_PianoConcerto.m4a', composer:'Tchaikovsky',  title:'Piano Concerto No.1 Op.23 - 1. Allegro con spirito',          titleKo:'피아노 협주곡 1번'},
+  {id:26,era:'romantic',  file:'30_Puccini_NessunDorma.m4a',       composer:'Puccini',      title:'Opera Turandot "Nessun Dorma"',                               titleKo:"투란도트 중 '아무도 잠들지 말라'"},
+  {id:27,era:'modern',    file:'03_Debussy_LaMer.m4a',             composer:'Debussy',      title:"Symphonic poem 'La mer' 2nd mov.",                            titleKo:"교향시 '바다' 2악장"},
+  {id:28,era:'modern',    file:'04_CarlOrff_OFortuna.m4a',         composer:'Carl Orff',    title:"Carmina Burana: 'O Fortuna'",                                 titleKo:'오, 운명의 여신이여'},
+  {id:29,era:'modern',    file:'24_ErikSatie_Gymnopedie.m4a',      composer:'Erik Satie',   title:'Gymnopédies No.1',                                            titleKo:'짐 노페디 1번'},
+  {id:30,era:'modern',    file:'20_Bolcom_GracefulGhost.m4a',      composer:'W. Bolcom',    title:'Graceful Ghost Rag',                                          titleKo:'우아한 유령'},
+  {id:31,era:'modern',    file:'26_KarlJenkins_Palladio.m4a',      composer:'Karl Jenkins', title:'Palladio: 1. Allegretto',                                     titleKo:'팔라디오'},
+  {id:32,era:'modern',    file:'14_Kapustin_Pastoral.m4a',         composer:'Kapustin',     title:"Eight Concert Etudes Op.40 No.6 'Pastoral'",                  titleKo:'8개의 에튀드 중 6번'},
+  {id:33,era:'modern',    file:'38_Khachaturian_Masquerade.m4a',   composer:'Khachaturian', title:'Ballet Suite from Masquerade. 1. Waltz',                      titleKo:'가면무도회 중 왈츠'},
 ];
 
 // 아이콘
+const DESCRIPTIONS={1:{bullets:["바로크 시대 캐논 형식의 대표곡","동일한 베이스 라인이 반복되는 위에 3성부 바이올린이 돌림노래처럼 이어지는 구조","바로크 음악의 지속 저음(통주저음) 특징이 잘 드러나는 작품"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["4성부 바이올린이 돌림노래처럼 이어지는 구조이다","동일한 베이스 라인이 반복되는 위에 3성부 바이올린이 돌림노래처럼 이어진다","낭만주의 시대 캐논 형식의 대표곡이다","바로크 음악의 대위법보다는 화성적 특징이 잘 드러나는 작품이다","독주 바이올린과 관현악의 대비와 조화가 특징이다"],ans:1},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 있는 것은?",opts:["개신교 교회음악가로 활동하며 대위법을 완성한 독일 작곡가가 작곡하였다","바로크 음악의 지속 저음 특징이 잘 드러나는 작품이다","콘체르토 양식의 대표적 예시로 독주악기와 관현악의 대비가 특징이다","루바토 주법과 페달 사용을 즐겨한 피아노의 시인이 작곡하였다","음악극 장르를 창시하고 라이트 모티브를 사용한 작곡가의 작품이다"],ans:1}},2:{bullets:["바흐는 바로크 시대를 대표하는 독일의 작곡가이자 오르가니스트","개신교 교회음악가로 활동하며 평균율 클라비어곡집에서 24개의 장·단조 조성체계를 사용하고 대위법을 완성","바로크 음악의 균형·질서·조직의 특징을 대표하는 작곡가"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["바흐는 개신교 교회음악가로 활동하며 대위법을 완성하였다","바흐는 평균율 클라비어곡집에서 12개의 조성체계를 사용하였다","낭만주의 음악의 서정성과 감성적 표현이 특징이다","바흐는 이탈리아 태생의 작곡가이자 바이올린 연주자였다","바흐는 400곡 이상의 기악 협주곡을 작곡하였다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["바로크 시대를 대표하는 독일의 작곡가이자 오르가니스트가 작곡하였다","평균율 클라비어곡집에서 24개의 장·단조 조성체계를 사용한 작곡가의 작품이다","바로크 음악의 균형·질서·조직의 특징을 대표하는 작곡가의 작품이다","600곡 이상의 가곡을 남겨 가곡의 왕으로 불리는 작곡가가 작곡하였다","개신교 교회음악가로 활동하며 대위법을 완성한 작곡가의 작품이다"],ans:3}},3:{bullets:["바흐가 작곡한 6개의 무반주 첼로 모음곡 중 첫 번째","당대에는 빛을 보지 못하고 200년 후 파블로 카잘스의 연주로 세상에 알려짐","1개의 전주곡과 5개의 춤곡(알라망드-쿠랑트-사라방드-미뉴에트 I&II-지그)으로 구성","전주곡(Prelude)은 17-18세기 모음곡을 시작하는 첫 악장으로 사용됨"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["바흐가 작곡한 6개의 무반주 첼로 모음곡 중 첫 번째이다","당대에 큰 인기를 얻어 초연 직후부터 널리 연주되었다","1개의 전주곡과 4개의 춤곡으로 구성된다","파블로 카잘스가 직접 작곡하여 세상에 알린 곡이다","20세기 들어 요요마의 연주로 처음 세상에 알려졌다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["현존하는 가장 위대한 첼로 곡 중 하나로 알려져 있다","당대에는 빛을 보지 못하고 200년 후에야 세상에 알려졌다","알라망드-쿠랑트-사라방드-미뉴에트-지그의 춤곡으로 구성된다","파블로 카잘스의 연주로 대중에게 알려졌다","쇼팽이 18세 때 즉흥적으로 작곡한 작품이다"],ans:4}},7:{bullets:["오스트리아 제국 초대 황제 프란츠 2세의 생일에 맞춰 헌정된 황제 찬가 선율을 인용","이 찬가는 당시 오스트리아 국가로 공식 선포되었으며 현재 독일 국가로도 사용됨","하이든은 100곡 이상의 교향곡을 작곡한 교향곡의 아버지","현악 4중주에 소나타 형식을 정착시키고 오늘날 현악 4중주의 표준 양식 체계를 확립"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["오스트리아 제국 초대 황제 프란츠 2세의 생일에 헌정된 황제 찬가 선율을 인용하였다","이 찬가 선율은 현재 프랑스 국가로 사용되고 있다","하이든은 50곡 이상의 교향곡을 작곡한 교향곡의 아버지이다","현악 5중주에 소나타 형식을 정착시킨 작곡가의 작품이다","바흐의 평균율 클라비어곡집에서 영감을 받아 작곡되었다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 있는 것은?",opts:["35년의 짧은 생애 동안 600곡 이상의 작품을 작곡한 고전주의 대표 작곡가의 작품이다","이 찬가 선율은 현재 독일 국가로도 사용되고 있다","600곡 이상의 가곡을 남겨 가곡의 왕으로 불리는 작곡가가 작곡하였다","당대에는 빛을 보지 못하고 200년 후에야 세상에 알려진 곡이다","피아노의 시인으로 불리며 루바토 주법을 즐겨 사용한 작곡가의 작품이다"],ans:1}},10:{bullets:["모차르트가 사망 직전까지 작곡했던 미완성 유작","죽은 이를 위한 진혼 미사곡으로 모차르트의 성악 예술 중 가장 유명한 합창곡","Lacrimosa(눈물의 날) 8마디까지만 작곡하고 숨을 거두었으며 사후 제자 쥐스마이어에 의해 완성","모차르트의 사후 미완성 유작을 둘러싼 19세기 레퀴엠 논쟁이 존재함"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["모차르트가 사망 직전까지 작곡했던 미완성 유작이다","Lacrimosa는 16마디까지만 작곡되고 미완성으로 남겨졌다","모차르트 사후 제자 살리에리에 의해 완성되었다","기악곡으로 오케스트라만을 위한 작품이다","모차르트가 완성한 작품으로 논란의 여지가 없다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["죽은 이를 위한 진혼 미사곡이다","모차르트의 사후 미완성 유작을 둘러싼 레퀴엠 논쟁이 존재한다","사후 제자 쥐스마이어에 의해 완성되었다","손가락 부상으로 피아니스트를 포기하고 작곡가로 전향한 작곡가의 작품이다","모차르트의 성악 예술 작품 중 가장 유명한 합창곡이다"],ans:3}},11:{bullets:["세레나데(Serenade)는 저녁 음악으로 애정·존경하는 사람에게 바치는 노래 형식의 단악장 기악곡 양식","모차르트는 35년의 짧은 생애 동안 600곡 이상의 작품을 작곡한 고전주의의 대표 작곡가","41개의 교향곡, 27개의 피아노 협주곡, 22개의 오페라 등 성악곡과 기악곡 분야 전반에 걸친 걸작을 남김"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["세레나데는 저녁 음악으로 애정·존경하는 사람에게 바치는 형식의 기악곡 양식이다","세레나데는 아침 음악으로 신에게 바치는 노래 형식의 기악곡 양식이다","모차르트는 50년의 생애 동안 200곡 이상의 작품을 작곡하였다","모차르트는 낭만주의의 대표 작곡가이다","모차르트는 27개의 교향곡과 41개의 피아노 협주곡을 작곡하였다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["35년의 짧은 생애 동안 600곡 이상의 작품을 남긴 고전주의 대표 작곡가의 작품이다","41개의 교향곡과 22개의 오페라를 작곡한 작곡가의 작품이다","26년에 걸쳐 직접 대본을 쓰고 작곡한 음악극 장르를 창시한 작곡가의 작품이다","세레나데 양식으로 작곡된 기악곡이다","성악곡과 기악곡 분야 전반에 걸쳐 뛰어난 걸작을 남긴 작곡가의 작품이다"],ans:2}},12:{bullets:["베토벤의 제자 안톤 쉰들러가 도입부 선율의 의미를 묻자 '운명은 이렇게 문을 두드린다'라고 답한 것에서 운명 교향곡이라는 부제가 붙음","4개의 음표로 구성된 운명 모티브가 각 악장에 걸쳐 치밀하고 짜임새 있게 전개됨","당시 청중들이 음악을 감상하고 분석하기 위한 태도 변화를 이끌어낸 곡","베토벤은 독일 태생의 고전주의 대표 작곡가이자 피아니스트로 악성(樂聖)이라 불림"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["제자 안톤 쉰들러가 도입부 선율의 의미를 묻자 '운명은 이렇게 문을 두드린다'라고 답한 것에서 부제가 붙었다","3개의 음표로 구성된 운명 모티브가 전개된다","베토벤은 이탈리아 태생의 낭만주의 작곡가이다","당시 청중들이 음악을 감상하는 태도 변화와는 관련이 없다","제자 쥐스마이어가 '운명 교향곡'이라는 부제를 붙였다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["독일 태생의 고전주의 대표 작곡가이자 피아니스트인 악성이 작곡하였다","4개의 음표로 구성된 운명 모티브가 각 악장에 걸쳐 전개된다","당시 청중들의 음악 감상 태도 변화를 이끌어낸 곡이다","헝가리 태생의 후기 낭만파 피아니스트로 교향시 장르를 창시한 작곡가의 작품이다","운명은 이렇게 문을 두드린다라는 말에서 부제가 붙었다"],ans:3}},13:{bullets:["베토벤은 독일 태생의 고전주의 대표 작곡가이자 피아니스트로 악성(樂聖)이라 불림","3악장 구성으로 3악장은 빠르고 격렬한 Presto agitato","베토벤은 청각 장애에도 불구하고 걸작을 남긴 작곡가"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["독일 태생의 고전주의 대표 작곡가이자 피아니스트인 악성이 작곡하였다","낭만주의 대표 작곡가 슈만이 작곡한 피아노 소나타이다","1악장이 빠르고 격렬한 Presto agitato로 구성된다","모차르트가 사망 직전까지 작곡한 미완성 유작이다","파가니니의 연주에 영감을 받아 작곡된 피아노 편곡 작품이다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["독일 태생의 고전주의 대표 작곡가 악성의 작품이다","피아노 소나타 14번으로 3악장은 Presto agitato이다","600곡 이상의 가곡을 남겨 가곡의 왕으로 불리는 작곡가의 작품이다","고전주의 시대를 대표하는 작곡가이자 피아니스트가 작곡하였다","악성(樂聖)이라 불리는 작곡가의 작품이다"],ans:2}},15:{bullets:["슈베르트가 18세 때 괴테의 시를 읽고 즉흥적으로 작곡한 작품으로 1815년 작곡, 6년 후 공식 초연","대표적인 통절 형식의 가곡으로 해설자·아버지·아이·마왕의 4가지 역할이 구분됨","후대 낭만파 작곡가 리스트에 의해 편곡되어 더욱 유명해짐","슈베르트는 1,000곡이 넘는 작품을 남겼으며 그 중 600곡 이상이 가곡으로 가곡의 왕이라 불림"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["슈베르트가 18세 때 괴테의 시를 읽고 즉흥적으로 작곡한 작품이다","해설자·아버지·아이의 3가지 역할이 구분된다","유절 형식의 가곡으로 각 절의 선율이 동일하게 반복된다","슈만에 의해 편곡되어 더욱 유명해졌다","슈베르트가 28세 때 괴테의 시에 영감을 받아 작곡하였다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["600곡 이상의 가곡을 남겨 가곡의 왕이라 불리는 작곡가의 작품이다","후대 낭만파 작곡가 리스트에 의해 편곡되어 더욱 유명해졌다","1000곡이 넘는 작품을 남긴 낭만주의 음악의 개척자가 작곡하였다","음악극 장르를 창시하고 반음계적 음악언어를 특징으로 하는 작곡가의 작품이다","통절 형식의 가곡으로 해설자·아버지·아이·마왕의 역할이 구분된다"],ans:3}},16:{bullets:["영국 빅토리아 공주의 국혼 당시 연주되어 귀족층을 중심으로 유행하며 오늘날의 웨딩마치로 자리매김","히틀러가 독일인의 우수성을 표방하며 유태인 혈통의 멘델스존 음악을 금지곡으로 지정함","멘델스존은 J.S 바흐의 마태 수난곡을 지휘하여 무대에 올리고 지휘자의 독립적 역할과 지휘법을 확립한 초기 낭만파 작곡가"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["영국 빅토리아 공주의 국혼 당시 연주되어 오늘날의 웨딩마치로 자리매김하였다","히틀러가 멘델스존을 우상화하며 이 곡을 독일 국가로 지정하였다","멘델스존은 바흐의 브란덴부르크 협주곡을 지휘하여 세상에 알렸다","낭만주의 후기 작곡가로 교향시 장르를 창시하였다","독일 귀족의 결혼식을 위해 특별히 의뢰받아 작곡된 곡이다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["히틀러에 의해 유태인 혈통으로 금지곡으로 지정된 작곡가의 작품이다","지휘자의 독립적 역할과 지휘법을 확립한 초기 낭만파 작곡가의 작품이다","J.S 바흐의 마태 수난곡을 지휘하여 무대에 올린 작곡가의 작품이다","26년에 걸쳐 대본을 직접 쓰고 작곡한 니벨룽의 반지를 작곡한 작곡가의 작품이다","영국 빅토리아 공주의 국혼 당시 연주되어 웨딩마치로 자리잡은 곡이다"],ans:3}},17:{bullets:["폴란드 시인 아담 미츠키에비치의 서사시 콘라드 발렌로드에서 영감을 받아 작곡","쇼팽은 고국에 대한 민족주의 정신을 담은 마주르카·폴로네즈 등의 폴란드 춤곡 형식의 음악도 작곡함","2차 세계대전 당시 폴란드 유태인 피아니스트 슈필만의 실화를 다룬 영화 피아니스트에 등장","피아노의 시인으로 불리며 루바토 주법과 페달 사용을 즐겨한 초기 낭만파 작곡가"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["폴란드 시인 아담 미츠키에비치의 서사시에서 영감을 받아 작곡되었다","쇼팽은 독일 태생으로 고국 독일에 대한 민족주의 정신을 음악으로 표현하였다","영화 피아니스트에서 독일 피아니스트 슈필만이 연주한 곡으로 등장한다","루바토 주법 대신 엄격한 박자를 유지하는 연주법을 즐겨 사용하였다","쇼팽은 후기 낭만파 작곡가로 교향시 장르를 창시하였다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["피아노의 시인으로 불리며 루바토 주법을 즐겨한 초기 낭만파 작곡가의 작품이다","고국에 대한 민족주의 정신을 담은 마주르카·폴로네즈 등의 폴란드 춤곡도 작곡하였다","영화 피아니스트에 등장하는 곡이다","천재적인 기교로 악마의 바이올리니스트라 불리며 비르투오소 시대를 연 작곡가의 작품이다","폴란드 시인의 서사시에서 영감을 받아 작곡되었다"],ans:3}},18:{bullets:["24개의 카프리스 중 마지막 곡으로 단순한 주제와 다양한 변주로 구성","화려한 기교와 극적 표현이 특징이며 이후 리스트 등 여러 작곡가에게 영감을 주어 다양한 편곡으로 재탄생","파가니니는 이탈리아 태생으로 천재적인 기교로 악마의 바이올리니스트라 불림","비르투오소(Virtuoso)의 시대를 연 최초의 연주가"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["24개의 카프리스 중 마지막 곡으로 단순한 주제와 다양한 변주로 구성된다","24개의 카프리스 중 첫 번째 곡이다","파가니니의 주제 선율은 이후 다른 작곡가들에게 영감을 주지 못했다","파가니니는 독일 태생의 피아니스트이다","단악장으로 구성되며 변주 없이 주제가 반복된다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["이탈리아 태생으로 천재적인 기교로 악마의 바이올리니스트라 불리는 연주가의 작품이다","비르투오소 시대를 연 최초의 연주가의 작품이다","이 곡의 주제는 리스트 등 여러 작곡가들에게 영감을 주어 다양한 편곡으로 재탄생되었다","손가락 부상으로 피아니스트를 포기하고 작곡가로 전향한 작곡가의 작품이다","화려한 기교와 극적 표현이 특징인 곡이다"],ans:3}},19:{bullets:["슈만의 피아노 모음곡 어린이 정경 중 7번째 곡","독일어로 꿈 또는 공상을 뜻하며 어린 시절의 순수한 기억과 따뜻한 정서를 서정적으로 표현","슈만은 손가락 부상으로 피아니스트를 포기하고 작곡가로 활동한 독일 태생의 초기 낭만파 작곡가"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["슈만의 피아노 모음곡 어린이 정경 중 7번째 곡이다","슈만의 피아노 모음곡 어린이 정경 중 첫 번째 곡이다","Traumerei는 독일어로 슬픔 또는 우울을 뜻한다","슈만은 시력 저하로 피아니스트를 포기하고 작곡가로 전향하였다","프랑스 태생의 초기 낭만파 작곡가가 작곡하였다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["손가락 부상으로 피아니스트를 포기하고 작곡가로 활동한 독일 태생 작곡가의 작품이다","어린 시절의 순수한 기억과 따뜻한 정서를 서정적으로 표현한 곡이다","독일어로 꿈 또는 공상을 뜻하는 제목의 곡이다","1000회 이상의 독주 콘서트로 피아노 리사이틀의 시초를 확립한 작곡가의 작품이다","초기 낭만파 작곡가의 피아노 모음곡 중 한 곡이다"],ans:3}},20:{bullets:["바그너가 26년에 걸쳐 대본을 직접 쓰고 작곡한 역사상 가장 긴 오페라 니벨룽의 반지 중 제2부 발퀴레에 수록","북유럽 신화와 게르만 설화를 바탕으로 하며 총 4부가 약 17시간 연주됨","바그너는 기존 오페라와 차별화된 음악극 장르를 창시했으며 라이트 모티브 사용, 반음계적 음악언어, 무조성 지향이 특징","히틀러가 숭배한 작곡가로 반유대주의 사상으로도 논란이 됨"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["26년에 걸쳐 대본을 직접 쓰고 작곡한 역사상 가장 긴 오페라 니벨룽의 반지 중 제2부에 수록된 곡이다","총 4부가 약 7시간 연주되는 오페라에 수록된 곡이다","바그너는 기존 오페라 양식을 그대로 유지하며 작곡하였다","동양 신화와 일본 설화를 바탕으로 한 오페라에 수록된 곡이다","히틀러가 금지곡으로 지정한 작곡가의 작품이다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["음악극 장르를 창시하고 라이트 모티브를 사용한 작곡가의 작품이다","히틀러가 숭배한 작곡가로 반유대주의 사상으로 논란이 된 작곡가의 작품이다","반음계적 음악언어와 무조성 지향을 특징으로 하는 작곡가의 작품이다","영국 빅토리아 공주의 국혼 당시 연주되어 웨딩마치로 자리잡은 작곡가의 작품이다","북유럽 신화와 게르만 설화를 바탕으로 한 오페라에 수록된 곡이다"],ans:3}},21:{bullets:["파가니니 대연습곡 6개 곡 중 작은 종을 뜻하는 3번째 곡","파가니니 바이올린 협주곡 제2번 3악장을 피아노 곡으로 편곡","고음부에서 빠르고 민첩한 옥타브 도약으로 종소리의 울림을 묘사하며 리스트의 초절 기교 테크닉이 돋보임","리스트는 헝가리 태생의 후기 낭만파 피아니스트로 1000회 이상의 독주 콘서트로 피아노 리사이틀의 시초를 확립하였으며 교향시 장르를 창시함"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["파가니니 대연습곡 중 작은 종을 뜻하는 3번째 곡으로 파가니니 바이올린 협주곡을 피아노 곡으로 편곡하였다","파가니니 대연습곡 6개 곡 중 마지막 6번째 곡이다","파가니니 첼로 협주곡 제2번을 피아노 곡으로 편곡한 작품이다","리스트는 이탈리아 태생의 초기 낭만파 피아니스트이다","저음부에서 느리고 장중한 옥타브 진행으로 종소리의 울림을 묘사한다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["헝가리 태생의 후기 낭만파 피아니스트가 작곡하였다","1000회 이상의 독주 콘서트로 피아노 리사이틀의 시초를 확립한 작곡가의 작품이다","교향시 장르를 창시한 작곡가의 작품이다","짧은 생애 동안 600곡 이상의 가곡을 남겨 가곡의 왕으로 불리는 작곡가의 작품이다","파가니니의 연주에 심취하여 그의 작품을 피아노 곡으로 편곡한 작곡가의 작품이다"],ans:3}},23:{bullets:["말러가 연인 알마 쉰들러에게 보내는 사랑의 고백으로 유명한 곡","말러는 오스트리아 제국 보헤미아 태생의 후기 낭만파 음악가","당대 최고의 오페라 지휘자로 활동했으나 작곡가로서의 인지도는 사후 50년이 지난 1960년대부터 주목받기 시작","9번 교향곡 징크스에 해당하는 작곡가 중 한 명"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["말러가 연인 알마 쉰들러에게 보내는 사랑의 고백으로 유명한 곡이다","말러가 어머니에게 바친 슬픔의 곡으로 유명하다","말러는 당대 최고의 피아니스트로 활동하였다","작곡가로서의 인지도는 생전부터 높았으며 사후에는 오히려 잊혀졌다","말러는 러시아 태생의 후기 낭만파 음악가이다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["오스트리아 제국 보헤미아 태생의 후기 낭만파 음악가의 작품이다","당대 최고의 오페라 지휘자로 활동했으나 작곡가로서는 사후 1960년대부터 주목받은 작곡가의 작품이다","9번 교향곡 징크스에 해당하는 작곡가의 작품이다","폴란드 시인의 서사시에서 영감을 받아 민족주의 정신을 담은 작곡가의 작품이다","연인에게 보내는 사랑의 고백으로 유명한 곡이다"],ans:3}},24:{bullets:["하바네라는 메조 소프라노가 부르는 아리아","메조 소프라노는 화려한 소프라노와 풍부한 알토의 중간 음색으로 비교적 음역의 범위가 넓음","서곡(Overture)은 오페라 연주 전 도입부 역할로 사용되는 기악 음악 양식으로 카르멘 서곡이 대표 예시"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["하바네라는 메조 소프라노가 부르는 아리아이다","하바네라는 테너가 부르는 아리아이다","메조 소프라노는 소프라노보다 높은 음역대의 목소리이다","서곡은 오페라 연주 후 마무리 역할로 사용되는 기악 음악 양식이다","메조 소프라노는 알토보다 낮은 음역대이다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["메조 소프라노가 부르는 아리아 하바네라가 포함된 오페라이다","카르멘 서곡은 서곡 양식의 대표 예시로 언급된다","메조 소프라노는 소프라노와 알토의 중간 음색이다","고음부에서 빠르고 민첩한 옥타브 도약으로 종소리 울림을 묘사하는 초절 기교 테크닉이 돋보이는 작품이다","오페라 연주 전 도입부 역할의 서곡을 포함한 오페라이다"],ans:3}},25:{bullets:["협주곡(Concerto)은 독주자와 오케스트라가 대비·조화를 이루는 다악장 형식의 기악곡 양식으로 3악장 소나타 형식으로 구성","차이코프스키는 러시아의 민족주의 작곡가","차이코프스키 콩쿠르(1958년 개최)가 그를 기리는 러시아의 권위 있는 콩쿠르로 제정됨"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["협주곡은 독주자와 오케스트라가 대비·조화를 이루는 다악장 형식의 기악곡 양식이다","협주곡은 단악장으로 구성되는 기악곡 양식이다","차이코프스키는 독일의 민족주의 작곡가이다","차이코프스키 콩쿠르는 1900년에 처음 개최되었다","협주곡은 성악곡과 기악곡이 결합된 다악장 형식의 양식이다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["러시아의 민족주의 작곡가의 작품이다","1958년 개최된 차이코프스키 콩쿠르가 그를 기리는 권위 있는 콩쿠르이다","독주자와 오케스트라가 대비·조화를 이루는 협주곡 형식의 작품이다","기능 화성과 조성을 벗어난 미니멀 뮤직과 음악 개혁의 선두주자인 작곡가의 작품이다","3악장 소나타 형식으로 구성된 협주곡이다"],ans:3}},26:{bullets:["테너 아리아의 대표곡","테너는 남자 목소리 중 가장 높은 음역대로 강한 정서 표현이 가능","레체로·리리코·드라마티코 테너 등으로 구분됨"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["테너 아리아의 대표곡으로 테너는 남자 목소리 중 가장 높은 음역대이다","메조 소프라노 아리아의 대표곡이다","테너는 남자 목소리 중 가장 낮은 음역대이다","바리톤 아리아의 대표곡으로 풍부하고 중후한 음색이 특징이다","테너는 레체로·리리코·드라마티코의 3가지로 구분되며 가장 낮은 음역대이다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["테너 아리아의 대표곡이다","테너는 레체로·리리코·드라마티코 테너 등으로 구분된다","남자 목소리 중 가장 높은 음역대인 테너가 부르는 아리아이다","교향시 양식으로 단악장 구성이며 인상주의 음악의 대가가 작곡하였다","투란도트 오페라에 수록된 아리아이다"],ans:3}},27:{bullets:["교향시(symphonic poem)는 낭만파 시대 관현악 곡을 대표하는 표제적 악곡 양식으로 단악장 구성","드뷔시는 인상주의 음악의 대가로 엄격한 화음 규칙을 탈피","뚜렷하지 않은 시각적 이미지를 음의 움직임으로 묘사하는 특징을 가짐"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["교향시는 낭만파 시대 관현악 곡을 대표하는 표제적 악곡 양식으로 단악장으로 구성된다","교향시는 고전주의 시대 기악곡 양식으로 3악장으로 구성된다","드뷔시는 엄격한 화음 규칙을 준수하는 낭만주의 음악의 대가이다","교향시는 협주곡 양식과 동일하게 독주자와 오케스트라가 대비를 이룬다","드뷔시는 독일의 인상주의 음악의 대가이다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["인상주의 음악의 대가로 엄격한 화음 규칙을 탈피한 작곡가의 작품이다","뚜렷하지 않은 시각적 이미지를 음의 움직임으로 묘사하는 특징을 가진 작곡가의 작품이다","표제적 악곡 양식인 교향시 형식의 단악장 작품이다","26년에 걸쳐 직접 대본을 쓰고 작곡한 음악극 장르를 창시한 작곡가의 작품이다","낭만파 시대 관현악 곡을 대표하는 표제적 악곡 양식으로 작곡된 곡이다"],ans:3}},29:{bullets:["짐노페디는 고대 스파르타 시대 축제에서 알몸의 남성들이 추는 춤을 뜻하는 상징적 제목","부드럽고 느린 선율의 반복으로 안정감과 고독함의 여운을 줌","제1악장 느리고 비통하게, 제2악장 느리고 슬프게, 제3악장 느리고 장중하게로 구성","에릭 사티는 기능 화성과 조성을 벗어난 창조적 음악을 추구한 미니멀 뮤직과 음악 개혁의 선두주자"],q1:{q:"다음 감상 곡에 대한 설명으로 올바른 것은?",opts:["짐노페디는 고대 스파르타 시대 축제에서 알몸의 남성들이 추는 춤을 뜻하는 상징적 제목이다","짐노페디는 고대 그리스 올림픽 경기를 기념하는 춤을 뜻한다","빠르고 화려한 선율의 변주로 강렬한 인상을 주는 곡이다","에릭 사티는 기능 화성과 조성을 철저히 준수하는 보수적 작곡가이다","제1악장 느리고 슬프게, 제2악장 느리고 비통하게, 제3악장 느리고 장중하게로 구성된다"],ans:0},q2:{q:"다음 감상 곡의 작곡가 및 작품 배경에 대한 설명으로 관련이 없는 것은?",opts:["기능 화성과 조성을 벗어난 창조적 음악을 추구한 미니멀 뮤직의 선두주자가 작곡하였다","부드럽고 느린 선율의 반복으로 안정감과 고독함의 여운을 주는 곡이다","고대 스파르타 시대 축제에서 알몸의 남성들이 추는 춤을 뜻하는 제목의 곡이다","사후 50년이 지난 1960년대부터 작곡가로서 주목받기 시작한 오페라 지휘자의 작품이다","음악 개혁의 선두주자로 불리는 작곡가의 작품이다"],ans:3}}};
+
 function setIcon(elOrId,type){
   const el=typeof elOrId==='string'?document.getElementById(elOrId):elOrId;
   if(!el)return;
@@ -331,6 +366,8 @@ function renderList(eraFilter){
     }
     const card=document.createElement('div');
     card.className='piece-card';
+    card.style.flexWrap='wrap';
+    const hasDesc=!!DESCRIPTIONS[p.id];
     card.innerHTML=`
       <button class="play-btn" id="playbtn-${p.id}" onclick="toggleListPiece(${p.id},this)">
         <svg viewBox="0 0 24 24">${ICON.play}</svg>
@@ -339,7 +376,10 @@ function renderList(eraFilter){
         <div class="piece-composer">${p.composer}</div>
         <div class="piece-title">${p.title}</div>
         <div class="piece-title-ko">${p.titleKo}</div>
-      </div>`;
+      </div>
+      ${hasDesc?`<button class="piece-desc-btn" onclick="toggleDesc(${p.id},this)">설명 ▾</button>`:''}
+      ${hasDesc?`<div class="piece-desc" id="desc-${p.id}"><ul>${DESCRIPTIONS[p.id].bullets.map(b=>`<li>${b}</li>`).join('')}</ul></div>`:''}
+    `;
     container.appendChild(card);
   });
 }
@@ -399,6 +439,13 @@ function closePlayer(){
   document.getElementById('player-container').classList.remove('visible');
 }
 
+function toggleDesc(id,btn){
+  const panel=document.getElementById('desc-'+id);
+  if(!panel)return;
+  const open=panel.classList.toggle('open');
+  btn.textContent=open?'설명 ▴':'설명 ▾';
+}
+
 // ===== QUIZ =====
 let quizQueue=[],currentQ=0,score=0,quizResults=[],answered=false;
 let currentComposers=[],currentTitles=[],selC=null,selT=null;
@@ -431,22 +478,51 @@ function getEnabledPieces(){
 }
 
 function startQuiz(){
-  const pool=getEnabledPieces();
+  const mode=document.getElementById('quiz-mode').value;
+  let pool=getEnabledPieces();
+  if(mode==='desc') pool=pool.filter(p=>!!DESCRIPTIONS[p.id]);
   if(pool.length<4){alert('최소 4곡 이상 포함된 시대를 선택해주세요.');return;}
-  const count=Math.min(parseInt(document.getElementById('quiz-count').value),pool.length);
   const choiceN=parseInt(document.getElementById('choice-count').value);
-  quizQueue=shuffle(pool).slice(0,count).map(piece=>{
-    const others=shuffle(PIECES.filter(p=>p.id!==piece.id));
-    // 작곡가 중복 제거
-    const wrongComposers=[];
-    const seenC=new Set([piece.composer]);
-    for(const p of others){if(!seenC.has(p.composer)){seenC.add(p.composer);wrongComposers.push(p.composer);}if(wrongComposers.length>=choiceN-1)break;}
-    // 제목 중복 제거
-    const wrongTitles=[];
-    const seenT=new Set([piece.title]);
-    for(const p of others){if(!seenT.has(p.title)){seenT.add(p.title);wrongTitles.push(p.title);}if(wrongTitles.length>=choiceN-1)break;}
-    return{piece,composerOptions:shuffle([piece.composer,...wrongComposers]),titleOptions:shuffle([piece.title,...wrongTitles])};
-  });
+
+  let count, matchCount, descCount;
+  if(mode==='real'){
+    count=10;
+    // 랜덤으로 7+3 또는 8+2
+    const split=Math.random()<0.5?[7,3]:[8,2];
+    matchCount=split[0]; descCount=split[1];
+  } else {
+    count=Math.min(parseInt(document.getElementById('quiz-count').value),pool.length);
+    matchCount=count; descCount=0;
+  }
+
+  // 실전 모드: 매칭용 + 설명용 분리
+  if(mode==='real'){
+    const descPool=pool.filter(p=>!!DESCRIPTIONS[p.id]);
+    if(descPool.length<descCount){alert('설명 있는 곡이 부족합니다. 더 많은 시대를 선택해주세요.');return;}
+    const matchPool=shuffle(pool);
+    const descPieces=shuffle(descPool).slice(0,descCount);
+    const descIds=new Set(descPieces.map(p=>p.id));
+    const matchPieces=matchPool.filter(p=>!descIds.has(p.id)).slice(0,matchCount);
+    const matchQ=matchPieces.map(piece=>{
+      const others=shuffle(PIECES.filter(p=>p.id!==piece.id));
+      const wrongComposers=[];const seenC=new Set([piece.composer]);
+      for(const p of others){if(!seenC.has(p.composer)){seenC.add(p.composer);wrongComposers.push(p.composer);}if(wrongComposers.length>=choiceN-1)break;}
+      const wrongTitles=[];const seenT=new Set([piece.title]);
+      for(const p of others){if(!seenT.has(p.title)){seenT.add(p.title);wrongTitles.push(p.title);}if(wrongTitles.length>=choiceN-1)break;}
+      return{piece,type:'match',composerOptions:shuffle([piece.composer,...wrongComposers]),titleOptions:shuffle([piece.title,...wrongTitles])};
+    });
+    const descQ=descPieces.map(piece=>({piece,type:'desc'}));
+    quizQueue=shuffle([...matchQ,...descQ]);
+  } else {
+    quizQueue=shuffle(pool).slice(0,count).map(piece=>{
+      const others=shuffle(PIECES.filter(p=>p.id!==piece.id));
+      const wrongComposers=[];const seenC=new Set([piece.composer]);
+      for(const p of others){if(!seenC.has(p.composer)){seenC.add(p.composer);wrongComposers.push(p.composer);}if(wrongComposers.length>=choiceN-1)break;}
+      const wrongTitles=[];const seenT=new Set([piece.title]);
+      for(const p of others){if(!seenT.has(p.title)){seenT.add(p.title);wrongTitles.push(p.title);}if(wrongTitles.length>=choiceN-1)break;}
+      return{piece,type:'match',composerOptions:shuffle([piece.composer,...wrongComposers]),titleOptions:shuffle([piece.title,...wrongTitles])};
+    });
+  }
   currentQ=0;score=0;quizResults=[];
   document.getElementById('quiz-settings-area').style.display='none';
   document.getElementById('quiz-area').classList.add('active');
@@ -456,13 +532,35 @@ function startQuiz(){
 
 function renderQuestion(){
   if(currentQ>=quizQueue.length){showResults();return;}
-  answered=false;selC=null;selT=null;
+  answered=false;selC=null;selT=null;descSelIdx=null;
+
+  // reset desc area
+  document.getElementById('desc-question-area').style.display='none';
+  document.getElementById('exam-columns-area').style.display='block';
+  document.getElementById('submit-btn').style.display='';
+  document.getElementById('desc-submit-btn').disabled=true;
+  document.getElementById('desc-quiz-feedback').className='quiz-feedback';
+  setIcon('desc-play-btn','play');
 
   const q=quizQueue[currentQ];
   const total=quizQueue.length;
   document.getElementById('q-counter').textContent=`${currentQ+1} / ${total}`;
   document.getElementById('q-score-live').textContent=`정답: ${score}`;
   document.getElementById('progress-fill').style.width=`${(currentQ/total)*100}%`;
+
+  const mode=document.getElementById('quiz-mode').value;
+  const hasDesc=!!DESCRIPTIONS[q.piece.id];
+  const useDesc = q.type==='desc' || mode==='desc' || (mode==='both' && hasDesc && Math.random()<0.5);
+
+  if(useDesc && hasDesc){
+    renderDescQuestion();
+    return;
+  }
+
+  document.getElementById('quiz-type-badge').textContent='작곡가 · 제목 매칭';
+  document.getElementById('desc-question-area').style.display='none';
+  document.getElementById('exam-columns-area').style.display='block';
+  document.getElementById('submit-btn').style.display='';
 
   quizAudio.src=BASE+q.piece.file;
   quizAudio.load();
@@ -583,6 +681,86 @@ function showResults(){
   document.getElementById('quiz-results').classList.add('show');
 }
 
+// ===== DESC QUIZ =====
+let descSelIdx=null;
+
+function renderDescQuestion(){
+  const q=quizQueue[currentQ];
+  const d=DESCRIPTIONS[q.piece.id];
+  // 랜덤으로 q1 또는 q2
+  const qtype=Math.random()<0.5?'q1':'q2';
+  const qdata=d[qtype];
+
+  document.getElementById('quiz-type-badge').textContent='작품 설명 문제';
+  document.getElementById('desc-question-area').style.display='block';
+  document.getElementById('exam-columns-area').style.display='none';
+  document.getElementById('submit-btn').style.display='none';
+  document.getElementById('desc-submit-btn').disabled=true;
+
+  document.getElementById('desc-q-text').textContent=qdata.q;
+
+  // 오디오
+  quizAudio.src=BASE+q.piece.file;
+  quizAudio.load();
+  setIcon('desc-play-btn','pause');
+  quizAudio.play().catch(()=>setIcon('desc-play-btn','play'));
+
+  descSelIdx=null;
+  const list=document.getElementById('desc-options-list');
+  list.innerHTML='';
+  // 섞인 보기 (정답 위치 기억)
+  const indices=[0,1,2,3,4];
+  const shuffled=indices.slice().sort(()=>Math.random()-.5);
+  const correctShuffledIdx=shuffled.indexOf(qdata.ans);
+  // store correct idx for submit
+  list.dataset.correctIdx=correctShuffledIdx;
+  list.dataset.qtype=qtype;
+
+  shuffled.forEach((origIdx,i)=>{
+    const div=document.createElement('div');
+    div.className='exam-item';
+    div.innerHTML=`<span class="exam-key">(${i+1})</span><span>${qdata.opts[origIdx]}</span>`;
+    div.addEventListener('click',()=>{
+      if(answered)return;
+      descSelIdx=i;
+      document.querySelectorAll('#desc-options-list .exam-item').forEach((el,j)=>el.className='exam-item'+(j===i?' selected':''));
+      document.getElementById('desc-submit-btn').disabled=false;
+    });
+    list.appendChild(div);
+  });
+}
+
+function submitDescAnswer(){
+  if(answered||descSelIdx===null)return;
+  answered=true;
+  quizAudio.pause();
+
+  const list=document.getElementById('desc-options-list');
+  const correctIdx=parseInt(list.dataset.correctIdx);
+  const ok=descSelIdx===correctIdx;
+  if(ok)score++;
+
+  document.querySelectorAll('#desc-options-list .exam-item').forEach((el,i)=>{
+    if(i===correctIdx)el.className='exam-item correct';
+    else if(i===descSelIdx&&!ok)el.className='exam-item wrong';
+    else el.className='exam-item disabled';
+  });
+  document.getElementById('desc-submit-btn').disabled=true;
+
+  const fb=document.getElementById('desc-quiz-feedback');
+  if(ok){fb.className='quiz-feedback correct-fb show';fb.innerHTML='<strong>✓ 정답!</strong>';}
+  else{fb.className='quiz-feedback wrong-fb show';fb.innerHTML=`<div class="fb-title">✗ 오답</div><div class="fb-row"><div class="fb-row-top"><span class="fb-label">정답</span></div><div class="fb-detail">(${correctIdx+1}번 보기</div></div>`;}
+
+  quizResults.push({q:quizQueue[currentQ],ok,type:'desc'});
+  document.getElementById('q-score-live').textContent=`정답: ${score}`;
+  document.getElementById('next-btn').classList.add('show');
+}
+
+function toggleCountVisibility(){
+  const mode=document.getElementById('quiz-mode').value;
+  const countGroup=document.getElementById('quiz-count-group');
+  if(countGroup) countGroup.style.display=mode==='real'?'none':'flex';
+}
 function resetQuiz(){
   document.getElementById('quiz-results').classList.remove('show');
   document.getElementById('quiz-settings-area').style.display='';
