@@ -156,7 +156,7 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
 <header>
   <p class="subtitle">2026-1 · 기말고사 대비</p>
   <h1>음악의 세계와 <span>감상</span></h1>
-  <p class="header-meta">총 33곡 · 시대별 분류 · 객관식 퀴즈</p>
+  <p class="header-meta">총 28곡 · 시대별 분류 · 객관식 퀴즈</p>
 </header>
 <nav>
   <button class="tab-btn active" onclick="switchTab('list',this)">곡 목록</button>
@@ -165,7 +165,7 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
 <main>
   <div id="tab-list" class="tab-content active">
     <div class="list-filters">
-      <button class="filter-btn active" onclick="filterList('all',this)">전체 (33)</button>
+      <button class="filter-btn active" onclick="filterList('all',this)">전체 (28)</button>
       <button class="filter-btn" onclick="filterList('baroque',this)">바로크</button>
       <button class="filter-btn" onclick="filterList('classical',this)">고전</button>
       <button class="filter-btn" onclick="filterList('romantic',this)">낭만</button>
@@ -185,7 +185,7 @@ main{max-width:860px;margin:0 auto;padding:24px 16px 140px;}
               <option value="5">5문제</option>
               <option value="10" selected>10문제</option>
               <option value="15">15문제</option>
-              <option value="33">전체</option>
+              <option value="28">전체</option>
             </select>
           </div>
           <div class="setting-group" id="choice-count-group">
@@ -303,12 +303,10 @@ const PIECES=[
   {id:3, era:'baroque',   file:'28_Bach_CelloSuite1.m4a',          composer:'Bach',         title:'Cello Suite No.1 BWV 1007, I. Prelude',                       titleKo:'첼로 모음곡 제1번 전주곡'},
   {id:4, era:'baroque',   file:'15_Vivaldi_Winter.m4a',            composer:'Vivaldi',      title:'Concerto No.4 in F minor, Op.8, RV 297, "Winter"',            titleKo:"사계 중 '겨울'"},
   {id:5, era:'baroque',   file:'21_Couperin_Barricades.m4a',       composer:'Couperin',     title:'Les barricades mysterieuses',                                 titleKo:'신비스러운 장벽'},
-  {id:6, era:'baroque',   file:'32_Handel_Hallelujah.m4a',         composer:'Handel',       title:"'Hallelujah Chorus' from Handel's Messiah",                   titleKo:'할렐루야 코러스'},
   {id:7, era:'classical', file:'05_Haydn_Emperor.m4a',             composer:'Haydn',        title:"String Quartet No.62, Op.76 No.3 'Emperor': II. Poco adagio", titleKo:"현악 4중주 62번 '황제' 2악장"},
   {id:8, era:'classical', file:'29_Haydn_CelloConcerto.m4a',       composer:'Haydn',        title:'Cello Concerto No.1 in C Major Hob.VIIb:1, 1. Moderato',     titleKo:'첼로 협주곡 1번 1악장'},
   {id:9, era:'classical', file:'09_Mozart_Sym40.m4a',              composer:'Mozart',       title:'Symphony No.40 in g minor, K550, 1st Mov.',                  titleKo:'교향곡 40번 g단조 1악장'},
   {id:10,era:'classical', file:'16_Mozart_Lacrimosa.m4a',          composer:'Mozart',       title:'Requiem in d minor, K 626 - Lacrimosa',                       titleKo:'레퀴엠 d단조'},
-  {id:11,era:'classical', file:'33_Mozart_EineKleine.m4a',         composer:'Mozart',       title:'Serenade No.13 in G Major, K.525, Eine Kleine Nachtmusik',    titleKo:'아이네 클라이네 나흐트무지크'},
   {id:12,era:'classical', file:'06_Beethoven_Sym5.m4a',            composer:'Beethoven',    title:'Symphony No.5 in C minor, Op.67, 1st Mov.',                  titleKo:'운명 교향곡'},
   {id:13,era:'classical', file:'22_Beethoven_Moonlight.m4a',       composer:'Beethoven',    title:"Piano Sonata No.14 'Moonlight': III. Presto agitato",          titleKo:'월광 소나타 3악장'},
   {id:14,era:'romantic',  file:'10_Schubert_PianoTrio.m4a',        composer:'Schubert',     title:'Piano Trio No.2 in E flat major, D.929 Op.100: II. Andante con moto', titleKo:'피아노 3중주 2번'},
